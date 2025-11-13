@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uzima Healthcare - Provider Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .pulse { animation: pulse 2s ease-in-out infinite; }
+        
+        .new-patient {
+            animation: fadeIn 0.5s ease-out, pulse 1s ease-in-out 2;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-teal-600 to-blue-600 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="bg-white rounded-full p-2 mr-3">
+                        <span class="text-3xl">🏥</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">Provider Dashboard</h1>
+                        <p class="text-teal-100 text-sm">Real-time Patient Queue Management</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <p class="text-teal-100 text-xs">Last updated</p>
+                        <p class="text-white font-semibold text-sm" id="last-update">Just now</p>
+                    </div>
+                    <button onclick="refreshData()" class="bg-white text-teal-600 px-4 py-2 rounded-lg font-semibold hover:bg-teal-50 transition">
+                        🔄 Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="bg-white shadow-md border-b-2 border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <!-- Total Patients -->
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-gray-800" id="total-count">0</div>
+                    <div class="text-xs text-gray-600 font-semibold">Total Patients</div>
+                </div>
+                <!-- Emergency -->
+                <div class="text-center bg-red-50 rounded-lg p-2">
+                    <div class="text-3xl font-bold text-red-600" id="emergency-count">0</div>
+                    <div class="text-xs text-red-700 font-semibold">🚨 Emergency</div>
+                </div>
+                <!-- Doctor -->
+                <div class="text-center bg-yellow-50 rounded-lg p-2">
+                    <div class="text-3xl font-bold text-yellow-600" id="doctor-count">0</div>
+                    <div class="text-xs text-yellow-700 font-semibold">👨‍⚕️ Doctor</div>
+                </div>
+                <!-- Nurse -->
+                <div class="text-center bg-green-50 rounded-lg p-2">
+                    <div class="text-3xl font-bold text-green-600" id="nurse-count">0</div>
+                    <div class="text-xs text-green-700 font-semibold">👩‍⚕️ Nurse</div>
+                </div>
+                <!-- Self-Care -->
+                <div class="text-center bg-blue-50 rounded-lg p-2">
+                    <div class="text-3xl font-bold text-blue-600" id="selfcare-count">0</div>
+                    <div class="text-xs text-blue-700 font-semibold">🏠 Self-Care</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex gap-2 overflow-x-auto">
+                <button onclick="filterQueue('all')" id="filter-all" class="filter-btn active px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition">
+                    All Patients
+                </button>
+                <button onclick="filterQueue('EMERGENCY')" id="filter-emergency" class="filter-btn px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition">
+                    🚨 Emergency
+                </button>
+                <button onclick="filterQueue('PHYSICIAN CONSULTATION')" id="filter-doctor" class="filter-btn px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition">
+                    👨‍⚕️ Doctor
+                </button>
+                <button onclick="filterQueue('NURSE CONSULTATION')" id="filter-nurse" class="filter-btn px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition">
+                    👩‍⚕️ Nurse
+                </button>
+                <button onclick="filterQueue('SELF-CARE')" id="filter-selfcare" class="filter-btn px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition">
+                    🏠 Self-Care
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        
+        <!-- Loading State -->
+        <div id="loading" class="text-center py-12">
+            <div class="animate-spin text-6xl mb-4">⏳</div>
+            <p class="text-gray-600 font-semibold">Loading patient queue...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-12">
+            <div class="text-6xl mb-4">📋</div>
+            <p class="text-gray-600 font-semibold text-lg">No patients in queue</p>
+            <p class="text-gray-500 text-sm mt-2">New patients will appear here automatically</p>
+        </div>
+
+        <!-- Patient Queue -->
+        <div id="patient-queue" class="space-y-4"></div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-gradient-to-r from-teal-600 to-blue-600 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center text-white">
+            <p class="text-sm font-semibold">Uzima Healthcare Provider Dashboard</p>
+            <p class="text-xs text-teal-100 mt-1">Real-time patient queue management system</p>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration - REPLACE WITH YOUR CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyCuIJN_dMJyutgBM-WjSRtHvGcqECfd73E",
+            authDomain: "uzima-healthcare.firebaseapp.com",
+            projectId: "uzima-healthcare",
+            storageBucket: "uzima-healthcare.firebasestorage.app",
+            messagingSenderId: "7640251385",
+            appId: "1:7640251385:web:f40a7d601e68b7aa255b28"
+        };
+
+        // Initialize Firebase
+         let db = null;
+
+         try {
+         firebase.initializeApp(firebaseConfig);
+         db = firebase.firestore();
+         console.log('✅ Firebase initialized');
+         console.log('✅ Database ready:', typeof db);
+         } catch (error) {
+         console.error('❌ Firebase error:', error);
+        }
+
+        // Global state
+        let allPatients = [];
+        let currentFilter = 'all';
+        let unsubscribe = null;
+
+        // Color mapping
+        const colorMap = {
+            'EMERGENCY': { 
+                bg: 'bg-red-100', 
+                border: 'border-red-500', 
+                text: 'text-red-900', 
+                badge: 'bg-red-600',
+                borderLeft: 'border-l-8 border-l-red-600'
+            },
+            'PHYSICIAN CONSULTATION': { 
+                bg: 'bg-yellow-100', 
+                border: 'border-yellow-500', 
+                text: 'text-yellow-900', 
+                badge: 'bg-yellow-600',
+                borderLeft: 'border-l-8 border-l-yellow-600'
+            },
+            'NURSE CONSULTATION': { 
+                bg: 'bg-green-100', 
+                border: 'border-green-500', 
+                text: 'text-green-900', 
+                badge: 'bg-green-600',
+                borderLeft: 'border-l-8 border-l-green-600'
+            },
+            'SELF-CARE': { 
+                bg: 'bg-blue-100', 
+                border: 'border-blue-500', 
+                text: 'text-blue-900', 
+                badge: 'bg-blue-600',
+                borderLeft: 'border-l-8 border-l-blue-600'
+            }
+        };
+
+        // Icon mapping
+        const iconMap = {
+            'EMERGENCY': '🚨',
+            'PHYSICIAN CONSULTATION': '👨‍⚕️',
+            'NURSE CONSULTATION': '👩‍⚕️',
+            'SELF-CARE': '🏠'
+        };
+
+        // Source icon mapping
+        const sourceIconMap = {
+            'web': '💻',
+            'ussd': '📱',
+            'kiosk': '🖥️',
+            'USSD': '📱'
+        };
+
+        // Initialize
+        function init() {
+            if (db) {
+                listenToQueue();
+            } else {
+                showError('Database not initialized');
+            }
+        }
+
+        // Listen to real-time updates
+function listenToQueue() {
+    if (unsubscribe) unsubscribe();
+
+    unsubscribe = db.collection('assessments')
+        .where('status', '==', 'waiting')  // ← Changed from 'pending' to 'waiting'
+        .orderBy('createdAt', 'desc')
+        .onSnapshot(
+            (snapshot) => {
+                allPatients = [];
+                
+                snapshot.forEach((doc) => {
+                    allPatients.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                updateCounts();
+                renderQueue();
+                updateLastUpdate();
+                
+                document.getElementById('loading').classList.add('hidden');
+                
+                console.log(`✅ Loaded ${allPatients.length} patients`);
+            },
+            (error) => {
+                console.error('❌ Error loading queue:', error);
+                showError('Error loading patient queue');
+            }
+        );
+}
+
+        // Update counts
+        function updateCounts() {
+            const total = allPatients.length;
+            const emergency = allPatients.filter(p => p.triageLevel === 'EMERGENCY').length;
+            const doctor = allPatients.filter(p => p.triageLevel === 'PHYSICIAN CONSULTATION').length;
+            const nurse = allPatients.filter(p => p.triageLevel === 'NURSE CONSULTATION').length;
+            const selfcare = allPatients.filter(p => p.triageLevel === 'SELF-CARE').length;
+
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('emergency-count').textContent = emergency;
+            document.getElementById('doctor-count').textContent = doctor;
+            document.getElementById('nurse-count').textContent = nurse;
+            document.getElementById('selfcare-count').textContent = selfcare;
+        }
+
+        // Render queue
+        function renderQueue() {
+            const queueDiv = document.getElementById('patient-queue');
+            const emptyState = document.getElementById('empty-state');
+
+            // Filter patients
+            let filtered = allPatients;
+            if (currentFilter !== 'all') {
+                filtered = allPatients.filter(p => p.triageLevel === currentFilter);
+            }
+
+            // Sort by priority
+            filtered.sort((a, b) => {
+                const priorityOrder = { 'EMERGENCY': 1, 'PHYSICIAN CONSULTATION': 2, 'NURSE CONSULTATION': 3, 'SELF-CARE': 4 };
+                return (priorityOrder[a.triageLevel] || 99) - (priorityOrder[b.triageLevel] || 99);
+            });
+
+            if (filtered.length === 0) {
+                queueDiv.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            queueDiv.innerHTML = filtered.map(patient => {
+                const colors = colorMap[patient.triageLevel] || colorMap['PHYSICIAN CONSULTATION'];
+                const icon = iconMap[patient.triageLevel] || '👤';
+                const sourceIcon = sourceIconMap[patient.source] || '📋';
+                const timeSince = getTimeSince(patient.createdAt);
+
+                return `
+                    <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition ${colors.borderLeft} fade-in">
+                        <div class="p-6">
+                            <!-- Header -->
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex items-start gap-4 flex-1">
+                                    <div class="text-5xl">${icon}</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <h3 class="text-2xl font-bold text-gray-900">${patient.name}, ${patient.age}</h3>
+                                            <span class="text-2xl">${sourceIcon}</span>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2 mb-3">
+                                            <span class="${colors.badge} text-white px-3 py-1 rounded-full text-sm font-bold">
+                                                ${patient.triageLevel}
+                                            </span>
+                                            <span class="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                                Queue: ${patient.queueNumber || 'N/A'}
+                                            </span>
+                                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                                ${patient.source ? patient.source.toUpperCase() : 'UNKNOWN'}
+                                            </span>
+                                            <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs">
+                                                ${timeSince}
+                                            </span>
+                                        </div>
+                                        <p class="text-gray-700 font-semibold mb-1">📋 Chief Complaint:</p>
+                                        <p class="text-gray-600 mb-3">${patient.chiefComplaint || 'Not provided'}</p>
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                                            <div>
+                                                <span class="text-gray-500">Phone:</span>
+                                                <span class="font-semibold text-gray-800">${patient.phone || 'N/A'}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-500">Duration:</span>
+                                                <span class="font-semibold text-gray-800">${(patient.duration || 'N/A').replace(/-/g, ' ')}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-500">Severity:</span>
+                                                <span class="font-semibold text-gray-800 capitalize">${patient.severity || 'N/A'}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-500">Wait:</span>
+                                                <span class="font-semibold text-gray-800">${patient.expectedWait || 'N/A'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2 ml-4">
+                                    <button 
+                                        onclick="markAsSeen('${patient.id}')" 
+                                        class="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition whitespace-nowrap"
+                                    >
+                                        ✓ Mark Seen
+                                    </button>
+                                    <button 
+                                        onclick="viewDetails('${patient.id}')" 
+                                        class="bg-gray-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-700 transition whitespace-nowrap"
+                                    >
+                                        👁️ Details
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Recommendation -->
+                            <div class="${colors.bg} p-4 rounded-lg border-2 ${colors.border}">
+                                <p class="font-semibold ${colors.text} mb-1">Recommended Action:</p>
+                                <p class="text-gray-800">${patient.triageAction || patient.reasoning || 'No recommendation'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Get time since
+        function getTimeSince(timestamp) {
+            if (!timestamp) return 'Unknown';
+            
+            const now = new Date();
+            const then = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const diffMs = now - then;
+            const diffMins = Math.floor(diffMs / 60000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins === 1) return '1 min ago';
+            if (diffMins < 60) return `${diffMins} mins ago`;
+            
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours === 1) return '1 hour ago';
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            
+            const diffDays = Math.floor(diffHours / 24);
+            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        }
+
+        // Mark as seen
+        async function markAsSeen(patientId) {
+            if (!confirm('Mark this patient as seen?')) return;
+
+            try {
+                await db.collection('assessments').doc(patientId).update({
+                    status: 'seen',
+                    seenAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log('✅ Patient marked as seen');
+                
+                // Show success message
+                const message = document.createElement('div');
+                message.className = 'fixed top-20 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in';
+                message.textContent = '✓ Patient marked as seen';
+                document.body.appendChild(message);
+                
+                setTimeout(() => message.remove(), 3000);
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                alert('Error marking patient as seen. Please try again.');
+            }
+        }
+
+        // View details
+        function viewDetails(patientId) {
+            const patient = allPatients.find(p => p.id === patientId);
+            if (!patient) return;
+
+            const colors = colorMap[patient.triageLevel] || colorMap['PHYSICIAN CONSULTATION'];
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="${colors.bg} p-6 border-b-4 ${colors.border}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h2 class="text-3xl font-bold ${colors.text}">Patient Details</h2>
+                                <p class="text-gray-700 mt-1">${patient.name}, ${patient.age} years old</p>
+                            </div>
+                            <button onclick="this.closest('.fixed').remove()" class="text-gray-600 hover:text-gray-900 text-2xl">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Triage Information</h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div><span class="text-gray-600">Level:</span> <span class="font-semibold">${patient.triageLevel}</span></div>
+                                <div><span class="text-gray-600">Queue:</span> <span class="font-semibold">${patient.queueNumber || 'N/A'}</span></div>
+                                <div><span class="text-gray-600">Priority:</span> <span class="font-semibold">${patient.triageColor || 'N/A'}</span></div>
+                                <div><span class="text-gray-600">Expected Wait:</span> <span class="font-semibold">${patient.expectedWait || 'N/A'}</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Contact Information</h3>
+                            <div class="text-sm">
+                                <div><span class="text-gray-600">Phone:</span> <span class="font-semibold">${patient.phone || 'N/A'}</span></div>
+                                <div><span class="text-gray-600">Source:</span> <span class="font-semibold">${(patient.source || 'Unknown').toUpperCase()}</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Symptoms</h3>
+                            <p class="text-gray-700">${patient.chiefComplaint || 'Not provided'}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Clinical Details</h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div><span class="text-gray-600">Duration:</span> <span class="font-semibold">${(patient.duration || 'N/A').replace(/-/g, ' ')}</span></div>
+                                <div><span class="text-gray-600">Severity:</span> <span class="font-semibold capitalize">${patient.severity || 'N/A'}</span></div>
+                                <div class="col-span-2"><span class="text-gray-600">Red Flags:</span> <span class="font-semibold">${Array.isArray(patient.redFlags) ? patient.redFlags.join(', ') : 'None'}</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2">Recommendation</h3>
+                            <p class="text-gray-700">${patient.reasoning || 'No recommendation provided'}</p>
+                        </div>
+                        ${patient.instructions && patient.instructions.length > 0 ? `
+                            <div>
+                                <h3 class="font-bold text-lg mb-2">Instructions</h3>
+                                <ul class="list-disc list-inside space-y-1 text-sm">
+                                    ${patient.instructions.map(inst => `<li>${inst}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        <div class="flex gap-3 pt-4">
+                            <button onclick="markAsSeen('${patient.id}'); this.closest('.fixed').remove();" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700">
+                                ✓ Mark as Seen
+                            </button>
+                            <button onclick="this.closest('.fixed').remove()" class="flex-1 bg-gray-600 text-white py-3 rounded-lg font-bold hover:bg-gray-700">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Filter queue
+        function filterQueue(level) {
+            currentFilter = level;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-teal-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+            });
+            
+            const activeBtn = document.getElementById(`filter-${level.toLowerCase().replace(/\s+/g, '-').replace('consultation', '').replace('physician', 'doctor').trim()}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-teal-600', 'text-white');
+                activeBtn.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+            }
+            
+            renderQueue();
+        }
+
+        // Refresh data
+        function refreshData() {
+            document.getElementById('last-update').textContent = 'Refreshing...';
+            listenToQueue();
+        }
+
+        // Update last update time
+        function updateLastUpdate() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('last-update').textContent = timeString;
+        }
+
+        // Show error
+        function showError(message) {
+            document.getElementById('loading').innerHTML = `
+                <div class="text-6xl mb-4">⚠️</div>
+                <p class="text-red-600 font-semibold text-lg">${message}</p>
+                <button onclick="location.reload()" class="mt-4 bg-teal-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-teal-700">
+                    Retry
+                </button>
+            `;
+        }
+
+        // Set active filter button style
+        document.getElementById('filter-all').classList.add('bg-teal-600', 'text-white');
+        document.querySelectorAll('.filter-btn:not(#filter-all)').forEach(btn => {
+            btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+        });
+
+        // Initialize on load
+        window.addEventListener('load', init);
+
+        // Update time every minute
+        setInterval(updateLastUpdate, 60000);
+    </script>
+</body>
+</html>
