@@ -13,23 +13,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .fade-in { animation: fadeIn 0.5s ease-out; }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
-        }
-        .pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-teal-50 via-blue-50 to-indigo-100 min-h-screen">
     
-    <!-- Language Toggle -->
-    <div class="fixed top-4 right-4 z-50">
-        <button id="lang-toggle" onclick="toggleLanguage()" class="bg-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition">
-            <span id="lang-icon">🇬🇧</span> <span id="lang-text">EN</span>
-        </button>
-    </div>
-
     <!-- Header -->
     <div class="bg-gradient-to-r from-teal-600 to-blue-600 shadow-lg">
         <div class="max-w-4xl mx-auto px-4 py-6">
@@ -39,9 +26,9 @@
                         <span class="text-4xl">🏥</span>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-bold text-white" data-translate="appName">Uzima Healthcare</h1>
-                        <p class="text-teal-100 text-sm font-medium" data-translate="tagline">Smart Triage System</p>
-                        <p class="text-teal-200 text-xs" data-translate="subtitle">Reducing wait times by 40% through intelligent routing</p>
+                        <h1 class="text-3xl font-bold text-white">Uzima Healthcare</h1>
+                        <p class="text-teal-100 text-sm font-medium">Smart Triage System</p>
+                        <p class="text-teal-200 text-xs">Comprehensive Patient Assessment</p>
                     </div>
                 </div>
             </div>
@@ -54,15 +41,15 @@
             <div class="flex items-center justify-center gap-8 text-white text-sm font-semibold flex-wrap">
                 <div class="flex items-center">
                     <span class="text-2xl mr-2">⚡</span>
-                    <span data-translate="stat1">40% Wait Time Reduction</span>
+                    <span>40% Wait Time Reduction</span>
                 </div>
                 <div class="flex items-center">
                     <span class="text-2xl mr-2">👥</span>
-                    <span data-translate="stat2">40% Capacity Increase</span>
+                    <span>40% Capacity Increase</span>
                 </div>
                 <div class="flex items-center">
                     <span class="text-2xl mr-2">😊</span>
-                    <span data-translate="stat3">Better Patient Experience</span>
+                    <span>Better Patient Experience</span>
                 </div>
             </div>
         </div>
@@ -76,30 +63,26 @@
             <div class="flex items-center mb-4">
                 <span class="text-2xl mr-3">🎯</span>
                 <div>
-                    <p class="text-lg font-bold text-gray-800" data-translate="quickDemo">Quick Demo</p>
-                    <p class="text-sm text-gray-600" data-translate="demoDesc">Click to see how Uzima routes different cases</p>
+                    <p class="text-lg font-bold text-gray-800">Quick Demo</p>
+                    <p class="text-sm text-gray-600">Click to see how Uzima routes different cases</p>
                 </div>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <button onclick="loadDemo(0)" class="px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition font-medium shadow-md hover:shadow-lg transform hover:scale-105">
                     <div class="text-2xl mb-1">👩</div>
                     <div class="text-xs">UTI Case</div>
-                    <div class="text-xs opacity-75">(Nurse)</div>
                 </button>
                 <button onclick="loadDemo(1)" class="px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition font-medium shadow-md hover:shadow-lg transform hover:scale-105">
                     <div class="text-2xl mb-1">🚨</div>
                     <div class="text-xs">Emergency</div>
-                    <div class="text-xs opacity-75">(Critical)</div>
                 </button>
                 <button onclick="loadDemo(2)" class="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition font-medium shadow-md hover:shadow-lg transform hover:scale-105">
                     <div class="text-2xl mb-1">🏠</div>
                     <div class="text-xs">Self-Care</div>
-                    <div class="text-xs opacity-75">(Home)</div>
                 </button>
                 <button onclick="loadDemo(3)" class="px-4 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition font-medium shadow-md hover:shadow-lg transform hover:scale-105">
                     <div class="text-2xl mb-1">👨‍⚕️</div>
                     <div class="text-xs">Complex</div>
-                    <div class="text-xs opacity-75">(Doctor)</div>
                 </button>
             </div>
         </div>
@@ -110,160 +93,314 @@
                 <div class="inline-block bg-teal-100 rounded-full p-4 mb-4">
                     <span class="text-5xl">📋</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-2" data-translate="formTitle">Patient Pre-Visit Assessment</h2>
-                <p class="text-gray-600" data-translate="formDesc">Complete this quick assessment to be routed to the right care level</p>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Patient Pre-Visit Assessment</h2>
+                <p class="text-gray-600">Complete this comprehensive assessment for accurate triage</p>
                 <div class="mt-4 inline-block bg-blue-50 px-4 py-2 rounded-lg">
-                    <p class="text-sm text-blue-800" data-translate="formTime">⏱️ Takes only <strong>2 minutes</strong> | Saves you <strong>30+ minutes</strong></p>
+                    <p class="text-sm text-blue-800">⏱️ Takes <strong>3-4 minutes</strong> | Saves you <strong>30+ minutes</strong></p>
                 </div>
             </div>
 
             <form id="triage-form" class="space-y-6">
                 
-                <!-- Phone Number -->
-                <div>
-                    <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2" data-translate="phoneLabel">
-                        📱 Phone Number *
-                    </label>
-                    <input 
-                        type="tel" 
-                        id="phone" 
-                        name="phone"
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                        placeholder="+254712345678"
-                        required
-                    />
+                <!-- SECTION 1: PERSONAL INFORMATION -->
+                <div class="border-l-4 border-teal-500 pl-4 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">📝 Personal Information</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Phone Number -->
+                        <div>
+                            <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+                                📱 Phone Number *
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                                placeholder="+254712345678"
+                                required
+                            />
+                        </div>
+
+                        <!-- Patient Name -->
+                        <div>
+                            <label for="patient-name" class="block text-sm font-semibold text-gray-700 mb-2">
+                                👤 Full Name *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="patient-name" 
+                                name="patient-name"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                                placeholder="e.g., Grace Wanjiru"
+                                required
+                            />
+                        </div>
+
+                        <!-- Age -->
+                        <div>
+                            <label for="patient-age" class="block text-sm font-semibold text-gray-700 mb-2">
+                                🎂 Age *
+                            </label>
+                            <input 
+                                type="number" 
+                                id="patient-age" 
+                                name="patient-age"
+                                min="0"
+                                max="120"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                                placeholder="e.g., 28"
+                                required
+                            />
+                        </div>
+
+                        <!-- Gender -->
+                        <div>
+                            <label for="gender" class="block text-sm font-semibold text-gray-700 mb-2">
+                                ⚧️ Gender *
+                            </label>
+                            <select 
+                                id="gender" 
+                                name="gender"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                                required
+                            >
+                                <option value="" disabled selected>Select gender...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Weight -->
+                        <div>
+                            <label for="weight" class="block text-sm font-semibold text-gray-700 mb-2">
+                                ⚖️ Weight (kg)
+                            </label>
+                            <input 
+                                type="number" 
+                                id="weight" 
+                                name="weight"
+                                min="0"
+                                step="0.1"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                                placeholder="e.g., 65"
+                            />
+                        </div>
+
+                        <!-- Height -->
+                        <div>
+                            <label for="height" class="block text-sm font-semibold text-gray-700 mb-2">
+                                📏 Height (cm)
+                            </label>
+                            <input 
+                                type="number" 
+                                id="height" 
+                                name="height"
+                                min="0"
+                                step="0.1"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                                placeholder="e.g., 165"
+                            />
+                        </div>
+
+                        <!-- Location -->
+                        <div class="md:col-span-2">
+                            <label for="location" class="block text-sm font-semibold text-gray-700 mb-2">
+                                📍 County/Location
+                            </label>
+                            <input 
+                                type="text" 
+                                id="location" 
+                                name="location"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                                placeholder="e.g., Nairobi"
+                            />
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Patient Name -->
-                <div>
-                    <label for="patient-name" class="block text-sm font-semibold text-gray-700 mb-2" data-translate="nameLabel">
-                        👤 Patient Name *
-                    </label>
-                    <input 
-                        type="text" 
-                        id="patient-name" 
-                        name="patient-name"
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                        placeholder="e.g., Grace Wanjiru"
-                        required
-                    />
-                </div>
-
-                <!-- Age -->
-                <div>
-                    <label for="patient-age" class="block text-sm font-semibold text-gray-700 mb-2" data-translate="ageLabel">
-                        🎂 Age *
-                    </label>
-                    <input 
-                        type="number" 
-                        id="patient-age" 
-                        name="patient-age"
-                        min="0"
-                        max="120"
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                        placeholder="e.g., 28"
-                        required
-                    />
-                </div>
-
-                <!-- Chief Complaint -->
-                <div>
-                    <label for="chief-complaint" class="block text-sm font-semibold text-gray-700 mb-2" data-translate="complaintLabel">
-                        💬 What brings you in today? *
-                    </label>
-                    <textarea 
-                        id="chief-complaint" 
-                        name="chief-complaint"
-                        rows="4" 
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                        placeholder="Describe your main symptom or concern..."
-                        required
-                    ></textarea>
-                </div>
-
-                <!-- Duration -->
-                <div>
-                    <label for="duration" class="block text-sm font-semibold text-gray-700 mb-2" data-translate="durationLabel">
-                        📅 How long have you had these symptoms? *
-                    </label>
-                    <select 
-                        id="duration" 
-                        name="duration"
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition" 
-                        required
-                    >
-                        <option value="" disabled selected>Select duration...</option>
-                        <option value="less-than-1-hour">Less than 1 hour</option>
-                        <option value="1-24-hours">1-24 hours</option>
-                        <option value="1-7-days">1-7 days</option>
-                        <option value="1-4-weeks">1-4 weeks</option>
-                        <option value="more-than-1-month">More than 1 month</option>
-                    </select>
-                </div>
-
-                <!-- Severity -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-3" data-translate="severityLabel">
-                        📊 How would you rate the severity? *
-                    </label>
-                    <div class="grid grid-cols-3 gap-4">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="severity" value="mild" class="peer hidden" required>
-                            <div class="border-2 border-gray-300 peer-checked:border-green-500 peer-checked:bg-green-50 rounded-lg p-4 text-center transition hover:border-green-400">
-                                <div class="text-4xl mb-2">😊</div>
-                                <div class="font-semibold text-green-700" data-translate="mild">Mild</div>
-                                <div class="text-xs text-gray-600" data-translate="manageable">Manageable</div>
-                            </div>
+                <!-- SECTION 2: MEDICAL HISTORY -->
+                <div class="border-l-4 border-purple-500 pl-4 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">🏥 Medical History</h3>
+                    
+                    <!-- Allergies -->
+                    <div class="mb-4">
+                        <label for="allergies" class="block text-sm font-semibold text-gray-700 mb-2">
+                            ⚠️ Known Allergies
                         </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="severity" value="moderate" class="peer hidden">
-                            <div class="border-2 border-gray-300 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 rounded-lg p-4 text-center transition hover:border-yellow-400">
-                                <div class="text-4xl mb-2">😐</div>
-                                <div class="font-semibold text-yellow-700" data-translate="moderate">Moderate</div>
-                                <div class="text-xs text-gray-600" data-translate="significant">Significant</div>
-                            </div>
+                        <textarea 
+                            id="allergies" 
+                            name="allergies"
+                            rows="2" 
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
+                            placeholder="e.g., Penicillin, Peanuts, None"
+                        ></textarea>
+                    </div>
+
+                    <!-- Current Medications -->
+                    <div class="mb-4">
+                        <label for="medications" class="block text-sm font-semibold text-gray-700 mb-2">
+                            💊 Current Medications
                         </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="severity" value="severe" class="peer hidden">
-                            <div class="border-2 border-gray-300 peer-checked:border-red-500 peer-checked:bg-red-50 rounded-lg p-4 text-center transition hover:border-red-400">
-                                <div class="text-4xl mb-2">😣</div>
-                                <div class="font-semibold text-red-700" data-translate="severe">Severe</div>
-                                <div class="text-xs text-gray-600" data-translate="veryPainful">Very painful</div>
-                            </div>
+                        <textarea 
+                            id="medications" 
+                            name="medications"
+                            rows="2" 
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
+                            placeholder="List any medications you're currently taking"
+                        ></textarea>
+                    </div>
+
+                    <!-- Travel History -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            ✈️ Travel History (Last 14 Days)
                         </label>
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="travel" value="no" class="mr-2" checked>
+                                <span>No travel</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="travel" value="domestic" class="mr-2">
+                                <span>Domestic</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="travel" value="international" class="mr-2">
+                                <span>International</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: CURRENT SYMPTOMS -->
+                <div class="border-l-4 border-red-500 pl-4 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">🩺 Current Symptoms</h3>
+
+                    <!-- Chief Complaint -->
+                    <div class="mb-4">
+                        <label for="chief-complaint" class="block text-sm font-semibold text-gray-700 mb-2">
+                            💬 What brings you in today? *
+                        </label>
+                        <textarea 
+                            id="chief-complaint" 
+                            name="chief-complaint"
+                            rows="4" 
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                            placeholder="Describe your main symptom or concern in detail..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <!-- Body Location -->
+                    <div class="mb-4">
+                        <label for="body-location" class="block text-sm font-semibold text-gray-700 mb-2">
+                            🎯 Location of Symptoms
+                        </label>
+                        <select 
+                            id="body-location" 
+                            name="body-location"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                        >
+                            <option value="">Select body area...</option>
+                            <option value="head">Head/Face</option>
+                            <option value="neck">Neck</option>
+                            <option value="chest">Chest</option>
+                            <option value="abdomen">Abdomen/Stomach</option>
+                            <option value="back">Back</option>
+                            <option value="arms">Arms/Hands</option>
+                            <option value="legs">Legs/Feet</option>
+                            <option value="skin">Skin (general)</option>
+                            <option value="multiple">Multiple areas</option>
+                            <option value="general">General/Whole body</option>
+                        </select>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="mb-4">
+                        <label for="duration" class="block text-sm font-semibold text-gray-700 mb-2">
+                            📅 Duration of symptoms *
+                        </label>
+                        <select 
+                            id="duration" 
+                            name="duration"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition" 
+                            required
+                        >
+                            <option value="" disabled selected>Select duration...</option>
+                            <option value="less-than-1-hour">Less than 1 hour</option>
+                            <option value="1-24-hours">1-24 hours</option>
+                            <option value="1-7-days">1-7 days</option>
+                            <option value="1-4-weeks">1-4 weeks</option>
+                            <option value="more-than-1-month">More than 1 month</option>
+                        </select>
+                    </div>
+
+                    <!-- Severity -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            📊 Severity Rating *
+                        </label>
+                        <div class="grid grid-cols-3 gap-4">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="severity" value="mild" class="peer hidden" required>
+                                <div class="border-2 border-gray-300 peer-checked:border-green-500 peer-checked:bg-green-50 rounded-lg p-4 text-center transition hover:border-green-400">
+                                    <div class="text-4xl mb-2">😊</div>
+                                    <div class="font-semibold text-green-700">Mild</div>
+                                    <div class="text-xs text-gray-600">Manageable</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="severity" value="moderate" class="peer hidden">
+                                <div class="border-2 border-gray-300 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 rounded-lg p-4 text-center transition hover:border-yellow-400">
+                                    <div class="text-4xl mb-2">😐</div>
+                                    <div class="font-semibold text-yellow-700">Moderate</div>
+                                    <div class="text-xs text-gray-600">Significant</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="severity" value="severe" class="peer hidden">
+                                <div class="border-2 border-gray-300 peer-checked:border-red-500 peer-checked:bg-red-50 rounded-lg p-4 text-center transition hover:border-red-400">
+                                    <div class="text-4xl mb-2">😣</div>
+                                    <div class="font-semibold text-red-700">Severe</div>
+                                    <div class="text-xs text-gray-600">Very painful</div>
+                                </div>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Red Flags -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-3" data-translate="redFlagsLabel">
-                        ⚠️ Do you have any of these symptoms?
+                <div class="border-l-4 border-red-600 pl-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">
+                        ⚠️ Emergency Warning Signs
                     </label>
                     <div class="bg-red-50 border-2 border-red-200 rounded-lg p-5">
                         <div class="space-y-3">
                             <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
                                 <input type="checkbox" name="red-flags" value="chest-pain" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800" data-translate="chestPain">💔 Chest pain or pressure</span>
+                                <span class="text-gray-800">💔 Chest pain or pressure</span>
                             </label>
                             <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
                                 <input type="checkbox" name="red-flags" value="breathing" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800" data-translate="breathing">😮‍💨 Severe difficulty breathing</span>
+                                <span class="text-gray-800">😮‍💨 Severe difficulty breathing</span>
                             </label>
                             <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
                                 <input type="checkbox" name="red-flags" value="confusion" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800" data-translate="confusion">😵 Confusion or altered consciousness</span>
+                                <span class="text-gray-800">😵 Confusion or altered consciousness</span>
                             </label>
                             <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
                                 <input type="checkbox" name="red-flags" value="bleeding" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800" data-translate="bleeding">🩸 Severe bleeding</span>
+                                <span class="text-gray-800">🩸 Severe bleeding</span>
                             </label>
                             <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
                                 <input type="checkbox" name="red-flags" value="high-fever" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800" data-translate="highFever">🌡️ Very high fever with confusion</span>
+                                <span class="text-gray-800">🌡️ Very high fever with confusion</span>
                             </label>
                             <label class="flex items-center cursor-pointer hover:bg-green-100 p-2 rounded border-t-2 border-green-200 mt-3 pt-3">
                                 <input type="checkbox" name="red-flags" value="none" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800 font-bold" data-translate="noneOfThese">✅ None of these</span>
+                                <span class="text-gray-800 font-bold">✅ None of these</span>
                             </label>
                         </div>
                     </div>
@@ -277,7 +414,7 @@
                 >
                     <span class="flex items-center justify-center">
                         <span class="text-2xl mr-3">🔍</span>
-                        <span data-translate="submitBtn">Get Care Recommendation</span>
+                        <span>Get Care Recommendation</span>
                     </span>
                 </button>
             </form>
@@ -296,179 +433,88 @@
                     <span class="text-3xl">🏥</span>
                 </div>
                 <h3 class="text-2xl font-bold">Uzima Healthcare</h3>
-                <p class="text-teal-100 text-sm">Smart Triage System</p>
-            </div>
-            <div class="border-t border-teal-400 pt-4 mt-4">
-                <p class="text-sm font-semibold mb-2">Hackfest Project 2025</p>
-                <p class="text-xs text-teal-100">Reducing hospital wait times through intelligent AI-powered routing</p>
+                <p class="text-teal-100 text-sm">Comprehensive Smart Triage System</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Configuration - REPLACE WITH YOUR FIREBASE CONFIG
-       const firebaseConfig = {
-         apiKey: "AIzaSyCuIJN_dMJyutgBM-WjSRtHvGcqECfd73E",
-         authDomain: "uzima-healthcare.firebaseapp.com",
-         projectId: "uzima-healthcare",
-         storageBucket: "uzima-healthcare.firebasestorage.app",
-         messagingSenderId: "7640251385",
-         appId: "1:7640251385:web:f40a7d601e68b7aa255b28"
-         };
-
-        // Initialize Firebase
-let db = null; // Declare globally
-
-try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore(); // Don't use const or let here
-    console.log('✅ Firebase initialized');
-    console.log('✅ Database ready:', typeof db);
-} catch (error) {
-    console.error('❌ Firebase error:', error);
-}
-
-        // Translations
-        const translations = {
-            en: {
-                appName: "Uzima Healthcare",
-                tagline: "Smart Triage System",
-                subtitle: "Reducing wait times by 40% through intelligent routing",
-                stat1: "40% Wait Time Reduction",
-                stat2: "40% Capacity Increase",
-                stat3: "Better Patient Experience",
-                quickDemo: "Quick Demo",
-                demoDesc: "Click to see how Uzima routes different cases",
-                formTitle: "Patient Pre-Visit Assessment",
-                formDesc: "Complete this quick assessment to be routed to the right care level",
-                formTime: "⏱️ Takes only <strong>2 minutes</strong> | Saves you <strong>30+ minutes</strong>",
-                phoneLabel: "📱 Phone Number *",
-                nameLabel: "👤 Patient Name *",
-                ageLabel: "🎂 Age *",
-                complaintLabel: "💬 What brings you in today? *",
-                durationLabel: "📅 How long have you had these symptoms? *",
-                severityLabel: "📊 How would you rate the severity? *",
-                mild: "Mild",
-                manageable: "Manageable",
-                moderate: "Moderate",
-                significant: "Significant",
-                severe: "Severe",
-                veryPainful: "Very painful",
-                redFlagsLabel: "⚠️ Do you have any of these symptoms?",
-                chestPain: "💔 Chest pain or pressure",
-                breathing: "😮‍💨 Severe difficulty breathing",
-                confusion: "😵 Confusion or altered consciousness",
-                bleeding: "🩸 Severe bleeding",
-                highFever: "🌡️ Very high fever with confusion",
-                noneOfThese: "✅ None of these",
-                submitBtn: "Get Care Recommendation"
-            },
-            sw: {
-                appName: "Uzima Healthcare",
-                tagline: "Mfumo wa Triage Mahiri",
-                subtitle: "Kupunguza muda wa kusubiri kwa 40% kupitia uelekezaji mahiri",
-                stat1: "Punguzo la 40% la Muda wa Kusubiri",
-                stat2: "Ongezeko la 40% la Uwezo",
-                stat3: "Uzoefu Bora wa Wagonjwa",
-                quickDemo: "Onyesho la Haraka",
-                demoDesc: "Bonyeza kuona jinsi Uzima inavyoelekeza kesi tofauti",
-                formTitle: "Tathmini ya Mgonjwa Kabla ya Kutembelea",
-                formDesc: "Kamilisha tathmini hii ya haraka ili uelekeze kwa kiwango sahihi cha huduma",
-                formTime: "⏱️ Inachukua <strong>dakika 2</strong> tu | Inakuokoa <strong>dakika 30+</strong>",
-                phoneLabel: "📱 Nambari ya Simu *",
-                nameLabel: "👤 Jina la Mgonjwa *",
-                ageLabel: "🎂 Umri *",
-                complaintLabel: "💬 Ni nini kinakukuleta leo? *",
-                durationLabel: "📅 Umekuwa na dalili hizi kwa muda gani? *",
-                severityLabel: "📊 Ungekadiria ukali vipi? *",
-                mild: "Kali kidogo",
-                manageable: "Inaweza kudhibitiwa",
-                moderate: "Wastani",
-                significant: "Muhimu",
-                severe: "Kali sana",
-                veryPainful: "Maumivu makali",
-                redFlagsLabel: "⚠️ Je, una dalili zozote za hizi?",
-                chestPain: "💔 Maumivu au shinikizo la kifua",
-                breathing: "😮‍💨 Shida kubwa ya kupumua",
-                confusion: "😵 Kuchanganyikiwa au fahamu kubadilika",
-                bleeding: "🩸 Damu kutoka kwa wingi",
-                highFever: "🌡️ Homa ya juu sana na kuchanganyikiwa",
-                noneOfThese: "✅ Hakuna mojawapo ya hizi",
-                submitBtn: "Pata Mapendekezo ya Huduma"
-            }
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCuIJN_dMJyutgBM-WjSRtHvGcqECfd73E",
+            authDomain: "uzima-healthcare.firebaseapp.com",
+            projectId: "uzima-healthcare",
+            storageBucket: "uzima-healthcare.firebasestorage.app",
+            messagingSenderId: "7640251385",
+            appId: "1:7640251385:web:f40a7d601e68b7aa255b28"
         };
 
-        let currentLang = 'en';
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'en' ? 'sw' : 'en';
-            document.getElementById('lang-icon').textContent = currentLang === 'en' ? '🇬🇧' : '🇰🇪';
-            document.getElementById('lang-text').textContent = currentLang.toUpperCase();
-            
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.getAttribute('data-translate');
-                if (translations[currentLang][key]) {
-                    el.innerHTML = translations[currentLang][key];
-                }
-            });
+        // Initialize Firebase
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            console.log('✅ Firebase initialized');
+        } catch (error) {
+            console.error('❌ Firebase error:', error);
         }
 
         // Demo Data
         const demoPatients = [
             {
-                phone: "+254712345678",
-                name: "Grace Wanjiru",
-                age: "28",
+                phone: "+254712345678", name: "Grace Wanjiru", age: "28", gender: "female",
+                weight: "65", height: "165", location: "Nairobi", allergies: "None",
+                medications: "None", travel: "no",
                 chiefComplaint: "Burning sensation when urinating, frequent urge to urinate, lower abdominal discomfort",
-                duration: "1-7-days",
-                severity: "moderate",
-                redFlags: ["none"]
+                bodyLocation: "abdomen", duration: "1-7-days", severity: "moderate", redFlags: ["none"]
             },
             {
-                phone: "+254723456789",
-                name: "John Kamau",
-                age: "65",
+                phone: "+254723456789", name: "John Kamau", age: "65", gender: "male",
+                weight: "78", height: "172", location: "Nairobi", allergies: "None",
+                medications: "Aspirin daily", travel: "no",
                 chiefComplaint: "Severe chest pain radiating to left arm, shortness of breath, heavy sweating, nausea",
-                duration: "less-than-1-hour",
-                severity: "severe",
-                redFlags: ["chest-pain", "breathing"]
+                bodyLocation: "chest", duration: "less-than-1-hour", severity: "severe", redFlags: ["chest-pain", "breathing"]
             },
             {
-                phone: "+254734567890",
-                name: "Mary Achieng",
-                age: "32",
+                phone: "+254734567890", name: "Mary Achieng", age: "32", gender: "female",
+                weight: "60", height: "160", location: "Kisumu", allergies: "Peanuts",
+                medications: "None", travel: "no",
                 chiefComplaint: "Mild headache, runny nose, slight cough, feeling tired",
-                duration: "1-24-hours",
-                severity: "mild",
-                redFlags: ["none"]
+                bodyLocation: "head", duration: "1-24-hours", severity: "mild", redFlags: ["none"]
             },
             {
-                phone: "+254745678901",
-                name: "Peter Ochieng",
-                age: "45",
+                phone: "+254745678901", name: "Peter Ochieng", age: "45", gender: "male",
+                weight: "72", height: "175", location: "Mombasa", allergies: "None",
+                medications: "None", travel: "international",
                 chiefComplaint: "Persistent cough for 3 weeks, night sweats, unexplained weight loss, fatigue",
-                duration: "1-4-weeks",
-                severity: "moderate",
-                redFlags: ["none"]
+                bodyLocation: "chest", duration: "1-4-weeks", severity: "moderate", redFlags: ["none"]
             }
         ];
 
         function loadDemo(index) {
-            const patient = demoPatients[index];
-            document.getElementById('phone').value = patient.phone;
-            document.getElementById('patient-name').value = patient.name;
-            document.getElementById('patient-age').value = patient.age;
-            document.getElementById('chief-complaint').value = patient.chiefComplaint;
-            document.getElementById('duration').value = patient.duration;
-            document.querySelector(`input[name="severity"][value="${patient.severity}"]`).checked = true;
+            const p = demoPatients[index];
+            document.getElementById('phone').value = p.phone;
+            document.getElementById('patient-name').value = p.name;
+            document.getElementById('patient-age').value = p.age;
+            document.getElementById('gender').value = p.gender;
+            if (p.weight) document.getElementById('weight').value = p.weight;
+            if (p.height) document.getElementById('height').value = p.height;
+            if (p.location) document.getElementById('location').value = p.location;
+            if (p.allergies) document.getElementById('allergies').value = p.allergies;
+            if (p.medications) document.getElementById('medications').value = p.medications;
+            document.querySelector(`input[name="travel"][value="${p.travel}"]`).checked = true;
+            document.getElementById('chief-complaint').value = p.chiefComplaint;
+            if (p.bodyLocation) document.getElementById('body-location').value = p.bodyLocation;
+            document.getElementById('duration').value = p.duration;
+            document.querySelector(`input[name="severity"][value="${p.severity}"]`).checked = true;
             
             document.querySelectorAll('input[name="red-flags"]').forEach(cb => cb.checked = false);
-            patient.redFlags.forEach(flag => {
+            p.redFlags.forEach(flag => {
                 const checkbox = document.querySelector(`input[name="red-flags"][value="${flag}"]`);
                 if (checkbox) checkbox.checked = true;
             });
 
-            document.getElementById('triage-form-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('triage-form-container').scrollIntoView({ behavior: 'smooth' });
         }
 
         // Triage Logic
@@ -479,81 +525,43 @@ try {
             const dangerousFlags = redFlags.filter(flag => flag !== 'none');
             if (dangerousFlags.length > 0) {
                 return {
-                    level: 'EMERGENCY',
-                    priority: 1,
-                    color: 'RED',
-                    icon: '🚨',
-                    action: 'Go to Emergency Department IMMEDIATELY',
-                    waitTime: 'IMMEDIATE',
+                    level: 'EMERGENCY', priority: 1, color: 'RED', icon: '🚨',
+                    action: 'Go to Emergency Department IMMEDIATELY', waitTime: 'IMMEDIATE',
                     provider: 'Emergency Physician',
                     reasoning: 'Life-threatening symptoms detected.',
-                    instructions: [
-                        'Call 999 or go to Emergency Department NOW',
-                        'Do NOT wait in outpatient queue',
-                        'Inform staff about symptoms immediately'
-                    ]
+                    instructions: ['Call 999 or go to Emergency NOW', 'Do NOT wait', 'Inform staff immediately']
                 };
             }
             
             const nurseKeywords = ['uti', 'urinary', 'burning', 'refill', 'blood pressure', 'diabetes'];
-            const isNurseCase = nurseKeywords.some(k => complaint.includes(k));
-            
-            if (isNurseCase && (severity === 'mild' || severity === 'moderate')) {
+            if (nurseKeywords.some(k => complaint.includes(k)) && (severity === 'mild' || severity === 'moderate')) {
                 return {
-                    level: 'NURSE CONSULTATION',
-                    priority: 3,
-                    color: 'GREEN',
-                    icon: '👩‍⚕️',
-                    action: 'See nurse or clinical officer',
-                    waitTime: '15-20 minutes',
+                    level: 'NURSE CONSULTATION', priority: 3, color: 'GREEN', icon: '👩‍⚕️',
+                    action: 'See nurse or clinical officer', waitTime: '15-20 minutes',
                     provider: 'Clinical Nurse/Officer',
                     reasoning: 'Your condition can be managed by nursing staff.',
-                    instructions: [
-                        'Check in at nurse station',
-                        'Show your reference number',
-                        'Nurse will assess and treat'
-                    ]
+                    instructions: ['Check in at nurse station', 'Show your reference number', 'Nurse will assess and treat']
                 };
             }
             
             const selfCareKeywords = ['cold', 'runny nose', 'mild headache', 'slight cough'];
-            const isSelfCare = selfCareKeywords.some(k => complaint.includes(k));
             const isRecent = duration === '1-24-hours' || duration === 'less-than-1-hour';
-            
-            if (isSelfCare && severity === 'mild' && isRecent) {
+            if (selfCareKeywords.some(k => complaint.includes(k)) && severity === 'mild' && isRecent) {
                 return {
-                    level: 'SELF-CARE',
-                    priority: 4,
-                    color: 'BLUE',
-                    icon: '🏠',
-                    action: 'Home care recommended',
-                    waitTime: 'No clinic visit needed',
+                    level: 'SELF-CARE', priority: 4, color: 'BLUE', icon: '🏠',
+                    action: 'Home care recommended', waitTime: 'No clinic visit needed',
                     provider: 'Self-management',
                     reasoning: 'Symptoms are mild and recent. Try home care first.',
-                    instructions: [
-                        'Get plenty of rest',
-                        'Stay hydrated',
-                        'Over-the-counter pain relief if needed',
-                        'Call clinic if symptoms worsen'
-                    ]
+                    instructions: ['Get plenty of rest', 'Stay hydrated', 'Over-the-counter pain relief if needed', 'Call clinic if symptoms worsen']
                 };
             }
             
             return {
-                level: 'PHYSICIAN CONSULTATION',
-                priority: 2,
-                color: 'YELLOW',
-                icon: '👨‍⚕️',
-                action: 'See medical doctor',
-                waitTime: '30-40 minutes',
+                level: 'PHYSICIAN CONSULTATION', priority: 2, color: 'YELLOW', icon: '👨‍⚕️',
+                action: 'See medical doctor', waitTime: '30-40 minutes',
                 provider: 'Medical Doctor',
                 reasoning: 'Your symptoms require physician evaluation.',
-                instructions: [
-                    'Check in at reception',
-                    'Doctor will examine you',
-                    'Tests may be ordered',
-                    'Treatment plan will be provided'
-                ]
+                instructions: ['Check in at reception', 'Doctor will examine you', 'Tests may be ordered', 'Treatment plan will be provided']
             };
         }
 
@@ -569,7 +577,15 @@ try {
                 phone: document.getElementById('phone').value,
                 name: document.getElementById('patient-name').value,
                 age: document.getElementById('patient-age').value,
+                gender: document.getElementById('gender').value,
+                weight: document.getElementById('weight').value || null,
+                height: document.getElementById('height').value || null,
+                location: document.getElementById('location').value || null,
+                allergies: document.getElementById('allergies').value || 'None',
+                medications: document.getElementById('medications').value || 'None',
+                travel: document.querySelector('input[name="travel"]:checked').value,
                 chiefComplaint: document.getElementById('chief-complaint').value,
+                bodyLocation: document.getElementById('body-location').value || 'Not specified',
                 duration: document.getElementById('duration').value,
                 severity: document.querySelector('input[name="severity"]:checked').value,
                 redFlags: Array.from(document.querySelectorAll('input[name="red-flags"]:checked')).map(cb => cb.value),
@@ -580,10 +596,8 @@ try {
             const triageResult = triagePatient(formData);
             
             try {
-                // Generate reference ID
                 const refId = 'WEB' + Date.now().toString().slice(-8);
                 
-                // Save to Firebase if initialized
                 if (db !== null) {
                     await db.collection('assessments').add({
                         ...formData,
@@ -602,33 +616,24 @@ try {
                     });
                     console.log('✅ Saved to Firebase');
                 } else {
-                    console.log('⚠️ Firebase not initialized, showing results only');
+                    console.log('⚠️ Firebase not initialized');
                 }
                 
-                // Show results
                 displayResult(triageResult, formData, refId);
                 
             } catch (error) {
                 console.error('❌ Error:', error);
-                // Still show results even if save fails
                 const refId = 'WEB' + Date.now().toString().slice(-8);
                 displayResult(triageResult, formData, refId);
             }
         });
 
-        // Generate queue number
         function generateQueueNumber(priority) {
-            const prefix = {
-                1: 'E', // Emergency
-                2: 'D', // Doctor
-                3: 'N', // Nurse
-                4: 'S'  // Self-care
-            };
+            const prefix = { 1: 'E', 2: 'D', 3: 'N', 4: 'S' };
             const number = Math.floor(Math.random() * 999) + 1;
             return `${prefix[priority]}${number.toString().padStart(3, '0')}`;
         }
 
-        // Display result
         function displayResult(result, formData, refId) {
             const resultsDiv = document.getElementById('results');
             const formDiv = document.getElementById('triage-form-container');
@@ -648,19 +653,15 @@ try {
             
             const colors = colorMap[result.color];
             const queueNum = generateQueueNumber(result.priority);
-            const currentlyServing = `${queueNum.charAt(0)}${(parseInt(queueNum.slice(1)) - 3).toString().padStart(3, '0')}`;
             
             resultsDiv.innerHTML = `
                 <div class="bg-white rounded-xl shadow-2xl p-8 mb-6 border-t-8 ${colors.border}">
-                    <!-- Queue Position Banner -->
                     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-xl mb-6 text-center">
                         <div class="text-sm font-semibold mb-2">YOUR QUEUE POSITION</div>
                         <div class="text-5xl font-bold mb-2">${queueNum}</div>
-                        <div class="text-sm opacity-90">Currently serving: ${currentlyServing}</div>
                         <div class="text-lg font-semibold mt-2">Estimated wait: ${result.waitTime}</div>
                     </div>
 
-                    <!-- Triage Result -->
                     <div class="${colors.bg} p-6 rounded-xl mb-6 border-2 ${colors.border}">
                         <div class="flex items-center mb-4">
                             <span class="text-6xl mr-4">${result.icon}</span>
@@ -672,13 +673,8 @@ try {
                             </div>
                         </div>
                         <p class="text-lg ${colors.text} mb-4">${result.reasoning}</p>
-                        <div class="bg-white p-4 rounded-lg">
-                            <p class="text-sm text-gray-600 font-semibold">Provider</p>
-                            <p class="text-gray-900 font-bold text-xl">${result.provider}</p>
-                        </div>
                     </div>
 
-                    <!-- Next Steps -->
                     <div class="bg-indigo-50 p-6 rounded-xl mb-6">
                         <h3 class="text-xl font-bold mb-4">📋 Next Steps</h3>
                         <ul class="space-y-2">
@@ -691,48 +687,25 @@ try {
                         </ul>
                     </div>
 
-                    <!-- SMS Notification -->
-                    <div class="bg-green-50 border-2 border-green-200 p-4 rounded-lg mb-6">
-                        <div class="flex items-center">
-                            <span class="text-3xl mr-3">📱</span>
-                            <div>
-                                <p class="font-semibold text-green-800">Reference Number: ${refId}</p>
-                                <p class="text-sm text-green-700">Show this at clinic reception</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Patient Summary -->
                     <div class="bg-gray-50 p-6 rounded-xl mb-6">
                         <h3 class="text-xl font-bold mb-4">📊 Assessment Summary</h3>
                         <div class="grid md:grid-cols-2 gap-4 text-sm">
-                            <div><strong>Reference ID:</strong> ${refId}</div>
-                            <div><strong>Queue Number:</strong> ${queueNum}</div>
+                            <div><strong>Reference:</strong> ${refId}</div>
+                            <div><strong>Queue:</strong> ${queueNum}</div>
                             <div><strong>Name:</strong> ${formData.name}</div>
                             <div><strong>Age:</strong> ${formData.age}</div>
+                            <div><strong>Gender:</strong> ${formData.gender}</div>
                             <div><strong>Phone:</strong> ${formData.phone}</div>
-                            <div><strong>Duration:</strong> ${formData.duration.replace(/-/g, ' ')}</div>
-                            <div><strong>Severity:</strong> ${formData.severity}</div>
-                            <div><strong>Priority:</strong> ${result.color}</div>
+                            ${formData.location ? `<div><strong>Location:</strong> ${formData.location}</div>` : ''}
+                            ${formData.weight ? `<div><strong>Weight:</strong> ${formData.weight} kg</div>` : ''}
+                            ${formData.height ? `<div><strong>Height:</strong> ${formData.height} cm</div>` : ''}
+                            <div><strong>Allergies:</strong> ${formData.allergies}</div>
+                            <div><strong>Medications:</strong> ${formData.medications}</div>
+                            <div><strong>Travel:</strong> ${formData.travel}</div>
                             <div class="md:col-span-2"><strong>Symptoms:</strong> ${formData.chiefComplaint}</div>
                         </div>
                     </div>
 
-                    <!-- Wait Time Comparison -->
-                    <div class="grid md:grid-cols-2 gap-6 mb-6">
-                        <div class="bg-red-50 p-6 rounded-xl text-center border-2 border-red-200">
-                            <p class="text-sm text-gray-600 mb-2">❌ Without Smart Triage</p>
-                            <p class="text-5xl font-bold text-red-600 mb-2">55 min</p>
-                            <p class="text-xs text-gray-600">Standard wait time</p>
-                        </div>
-                        <div class="bg-green-50 p-6 rounded-xl text-center border-2 border-green-200">
-                            <p class="text-sm text-gray-600 mb-2">✅ With Uzima Smart Triage</p>
-                            <p class="text-5xl font-bold text-green-600 mb-2">${result.waitTime.includes('IMMEDIATE') ? '0' : result.waitTime.includes('No') ? '0' : result.waitTime.split(' ')[0]}</p>
-                            <p class="text-xs text-gray-600">${result.waitTime.includes('No') ? 'No clinic visit needed' : 'Your estimated wait'}</p>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
                     <div class="grid md:grid-cols-2 gap-4">
                         <button onclick="resetForm()" class="bg-gray-600 text-white py-3 rounded-lg font-bold hover:bg-gray-700 transition">
                             ← Assess Another Patient
@@ -753,7 +726,7 @@ try {
             document.getElementById('results').classList.add('hidden');
             document.getElementById('triage-form').reset();
             document.getElementById('submit-btn').disabled = false;
-            document.getElementById('submit-btn').innerHTML = '<span class="flex items-center justify-center"><span class="text-2xl mr-3">🔍</span><span data-translate="submitBtn">Get Care Recommendation</span></span>';
+            document.getElementById('submit-btn').innerHTML = '<span class="flex items-center justify-center"><span class="text-2xl mr-3">🔍</span><span>Get Care Recommendation</span></span>';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
