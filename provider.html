@@ -139,7 +139,7 @@
     </div>
 
     <script>
-        // Firebase Configuration - REPLACE WITH YOUR CONFIG
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCuIJN_dMJyutgBM-WjSRtHvGcqECfd73E",
             authDomain: "uzima-healthcare.firebaseapp.com",
@@ -150,15 +150,15 @@
         };
 
         // Initialize Firebase
-         let db = null;
+        let db = null;
 
-         try {
-         firebase.initializeApp(firebaseConfig);
-         db = firebase.firestore();
-         console.log('✅ Firebase initialized');
-         console.log('✅ Database ready:', typeof db);
-         } catch (error) {
-         console.error('❌ Firebase error:', error);
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            console.log('✅ Firebase initialized');
+            console.log('✅ Database ready:', typeof db);
+        } catch (error) {
+            console.error('❌ Firebase error:', error);
         }
 
         // Global state
@@ -224,37 +224,37 @@
         }
 
         // Listen to real-time updates
-function listenToQueue() {
-    if (unsubscribe) unsubscribe();
+        function listenToQueue() {
+            if (unsubscribe) unsubscribe();
 
-    unsubscribe = db.collection('assessments')
-        .where('status', '==', 'waiting')  // ← Changed from 'pending' to 'waiting'
-        .orderBy('createdAt', 'desc')
-        .onSnapshot(
-            (snapshot) => {
-                allPatients = [];
-                
-                snapshot.forEach((doc) => {
-                    allPatients.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
+            unsubscribe = db.collection('assessments')
+                .where('status', '==', 'waiting')
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(
+                    (snapshot) => {
+                        allPatients = [];
+                        
+                        snapshot.forEach((doc) => {
+                            allPatients.push({
+                                id: doc.id,
+                                ...doc.data()
+                            });
+                        });
 
-                updateCounts();
-                renderQueue();
-                updateLastUpdate();
-                
-                document.getElementById('loading').classList.add('hidden');
-                
-                console.log(`✅ Loaded ${allPatients.length} patients`);
-            },
-            (error) => {
-                console.error('❌ Error loading queue:', error);
-                showError('Error loading patient queue');
-            }
-        );
-}
+                        updateCounts();
+                        renderQueue();
+                        updateLastUpdate();
+                        
+                        document.getElementById('loading').classList.add('hidden');
+                        
+                        console.log(`✅ Loaded ${allPatients.length} patients`);
+                    },
+                    (error) => {
+                        console.error('❌ Error loading queue:', error);
+                        showError('Error loading patient queue');
+                    }
+                );
+        }
 
         // Update counts
         function updateCounts() {
@@ -330,7 +330,9 @@ function listenToQueue() {
                                         </div>
                                         <p class="text-gray-700 font-semibold mb-1">📋 Chief Complaint:</p>
                                         <p class="text-gray-600 mb-3">${patient.chiefComplaint || 'Not provided'}</p>
-                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                                        
+                                        <!-- Basic Info -->
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm mb-3">
                                             <div>
                                                 <span class="text-gray-500">Phone:</span>
                                                 <span class="font-semibold text-gray-800">${patient.phone || 'N/A'}</span>
@@ -348,6 +350,50 @@ function listenToQueue() {
                                                 <span class="font-semibold text-gray-800">${patient.expectedWait || 'N/A'}</span>
                                             </div>
                                         </div>
+
+                                        <!-- Enhanced Medical Info -->
+                                        ${patient.gender || patient.weight || patient.height ? `
+                                        <div class="bg-blue-50 p-3 rounded-lg mb-3">
+                                            <p class="text-xs font-semibold text-blue-900 mb-2">📋 Patient Info</p>
+                                            <div class="grid grid-cols-3 gap-2 text-xs">
+                                                ${patient.gender ? `<div><span class="text-blue-700">Gender:</span> <span class="font-semibold capitalize">${patient.gender}</span></div>` : ''}
+                                                ${patient.weight ? `<div><span class="text-blue-700">Weight:</span> <span class="font-semibold">${patient.weight} kg</span></div>` : ''}
+                                                ${patient.height ? `<div><span class="text-blue-700">Height:</span> <span class="font-semibold">${patient.height} cm</span></div>` : ''}
+                                            </div>
+                                        </div>
+                                        ` : ''}
+
+                                        <!-- Allergy Alert -->
+                                        ${patient.allergies && patient.allergies !== 'None' && patient.allergies.trim() ? `
+                                        <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded mb-3">
+                                            <p class="text-xs font-bold text-red-900">⚠️ ALLERGIES:</p>
+                                            <p class="text-xs text-red-800">${patient.allergies}</p>
+                                        </div>
+                                        ` : ''}
+
+                                        <!-- Current Medications -->
+                                        ${patient.medications && patient.medications !== 'None' && patient.medications.trim() ? `
+                                        <div class="bg-purple-50 border-l-4 border-purple-500 p-3 rounded mb-3">
+                                            <p class="text-xs font-bold text-purple-900">💊 Current Medications:</p>
+                                            <p class="text-xs text-purple-800">${patient.medications}</p>
+                                        </div>
+                                        ` : ''}
+
+                                        <!-- Travel History Warning -->
+                                        ${patient.travel && patient.travel !== 'no' ? `
+                                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded mb-3">
+                                            <p class="text-xs font-bold text-yellow-900">✈️ Travel History:</p>
+                                            <p class="text-xs text-yellow-800 capitalize">${patient.travel} travel in last 14 days</p>
+                                        </div>
+                                        ` : ''}
+
+                                        <!-- Location -->
+                                        ${patient.location ? `
+                                        <div class="text-xs text-gray-600 mb-3">
+                                            <span class="text-gray-500">📍 Location:</span> 
+                                            <span class="font-semibold">${patient.location}</span>
+                                        </div>
+                                        ` : ''}
                                     </div>
                                 </div>
                                 <div class="flex flex-col gap-2 ml-4">
@@ -432,66 +478,172 @@ function listenToQueue() {
             const colors = colorMap[patient.triageLevel] || colorMap['PHYSICIAN CONSULTATION'];
             
             const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto';
             modal.innerHTML = `
-                <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                    <div class="${colors.bg} p-6 border-b-4 ${colors.border}">
+                <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto my-8">
+                    <div class="${colors.bg} p-6 border-b-4 ${colors.border} sticky top-0">
                         <div class="flex justify-between items-start">
                             <div>
                                 <h2 class="text-3xl font-bold ${colors.text}">Patient Details</h2>
                                 <p class="text-gray-700 mt-1">${patient.name}, ${patient.age} years old</p>
                             </div>
-                            <button onclick="this.closest('.fixed').remove()" class="text-gray-600 hover:text-gray-900 text-2xl">
-                                ✕
+                            <button onclick="this.closest('.fixed').remove()" class="text-gray-600 hover:text-gray-900 text-3xl font-bold leading-none">
+                                ×
                             </button>
                         </div>
                     </div>
                     <div class="p-6 space-y-4">
+                        <!-- Triage Info -->
                         <div>
-                            <h3 class="font-bold text-lg mb-2">Triage Information</h3>
+                            <h3 class="font-bold text-lg mb-3 flex items-center border-b pb-2">
+                                <span class="mr-2">🏥</span> Triage Information
+                            </h3>
                             <div class="grid grid-cols-2 gap-3 text-sm">
-                                <div><span class="text-gray-600">Level:</span> <span class="font-semibold">${patient.triageLevel}</span></div>
-                                <div><span class="text-gray-600">Queue:</span> <span class="font-semibold">${patient.queueNumber || 'N/A'}</span></div>
-                                <div><span class="text-gray-600">Priority:</span> <span class="font-semibold">${patient.triageColor || 'N/A'}</span></div>
-                                <div><span class="text-gray-600">Expected Wait:</span> <span class="font-semibold">${patient.expectedWait || 'N/A'}</span></div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <span class="text-gray-600">Level:</span>
+                                    <p class="font-bold text-lg">${patient.triageLevel}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <span class="text-gray-600">Queue:</span>
+                                    <p class="font-bold text-lg">${patient.queueNumber || 'N/A'}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <span class="text-gray-600">Priority:</span>
+                                    <p class="font-bold">${patient.triageColor || 'N/A'}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <span class="text-gray-600">Expected Wait:</span>
+                                    <p class="font-bold">${patient.expectedWait || 'N/A'}</p>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Contact & Demographics -->
                         <div>
-                            <h3 class="font-bold text-lg mb-2">Contact Information</h3>
-                            <div class="text-sm">
-                                <div><span class="text-gray-600">Phone:</span> <span class="font-semibold">${patient.phone || 'N/A'}</span></div>
-                                <div><span class="text-gray-600">Source:</span> <span class="font-semibold">${(patient.source || 'Unknown').toUpperCase()}</span></div>
+                            <h3 class="font-bold text-lg mb-3 flex items-center border-b pb-2">
+                                <span class="mr-2">👤</span> Patient Information
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <span class="text-blue-700 text-xs">Phone:</span>
+                                    <p class="font-semibold">${patient.phone || 'N/A'}</p>
+                                </div>
+                                ${patient.gender ? `
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <span class="text-blue-700 text-xs">Gender:</span>
+                                    <p class="font-semibold capitalize">${patient.gender}</p>
+                                </div>` : ''}
+                                ${patient.weight ? `
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <span class="text-blue-700 text-xs">Weight:</span>
+                                    <p class="font-semibold">${patient.weight} kg</p>
+                                </div>` : ''}
+                                ${patient.height ? `
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <span class="text-blue-700 text-xs">Height:</span>
+                                    <p class="font-semibold">${patient.height} cm</p>
+                                </div>` : ''}
+                                ${patient.location ? `
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <span class="text-blue-700 text-xs">Location:</span>
+                                    <p class="font-semibold">${patient.location}</p>
+                                </div>` : ''}
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <span class="text-blue-700 text-xs">Source:</span>
+                                    <p class="font-semibold uppercase">${patient.source || 'Unknown'}</p>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Medical Alerts -->
+                        ${(patient.allergies && patient.allergies !== 'None' && patient.allergies.trim()) || 
+                          (patient.medications && patient.medications !== 'None' && patient.medications.trim()) || 
+                          (patient.travel && patient.travel !== 'no') ? `
                         <div>
-                            <h3 class="font-bold text-lg mb-2">Symptoms</h3>
-                            <p class="text-gray-700">${patient.chiefComplaint || 'Not provided'}</p>
-                        </div>
+                            <h3 class="font-bold text-lg mb-3 flex items-center border-b pb-2">
+                                <span class="mr-2">⚠️</span> Medical Alerts
+                            </h3>
+                            ${patient.allergies && patient.allergies !== 'None' && patient.allergies.trim() ? `
+                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded mb-3">
+                                <p class="font-bold text-red-900 text-sm mb-1">🚨 ALLERGIES</p>
+                                <p class="text-red-800">${patient.allergies}</p>
+                            </div>` : ''}
+                            ${patient.medications && patient.medications !== 'None' && patient.medications.trim() ? `
+                            <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded mb-3">
+                                <p class="font-bold text-purple-900 text-sm mb-1">💊 Current Medications</p>
+                                <p class="text-purple-800">${patient.medications}</p>
+                            </div>` : ''}
+                            ${patient.travel && patient.travel !== 'no' ? `
+                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                                <p class="font-bold text-yellow-900 text-sm mb-1">✈️ Travel History</p>
+                                <p class="text-yellow-800 capitalize">${patient.travel} travel in last 14 days</p>
+                            </div>` : ''}
+                        </div>` : ''}
+
+                        <!-- Symptoms -->
                         <div>
-                            <h3 class="font-bold text-lg mb-2">Clinical Details</h3>
+                            <h3 class="font-bold text-lg mb-3 flex items-center border-b pb-2">
+                                <span class="mr-2">🩺
+                                    <span class="mr-2">🩺</span> Symptoms & Clinical Details
+                            </h3>
+                            <div class="bg-gray-50 p-4 rounded mb-3">
+                                <p class="text-sm text-gray-600 mb-1">Chief Complaint:</p>
+                                <p class="text-gray-900 font-semibold">${patient.chiefComplaint || 'Not provided'}</p>
+                            </div>
                             <div class="grid grid-cols-2 gap-3 text-sm">
-                                <div><span class="text-gray-600">Duration:</span> <span class="font-semibold">${(patient.duration || 'N/A').replace(/-/g, ' ')}</span></div>
-                                <div><span class="text-gray-600">Severity:</span> <span class="font-semibold capitalize">${patient.severity || 'N/A'}</span></div>
-                                <div class="col-span-2"><span class="text-gray-600">Red Flags:</span> <span class="font-semibold">${Array.isArray(patient.redFlags) ? patient.redFlags.join(', ') : 'None'}</span></div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <span class="text-gray-600">Duration:</span>
+                                    <p class="font-semibold">${(patient.duration || 'N/A').replace(/-/g, ' ')}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <span class="text-gray-600">Severity:</span>
+                                    <p class="font-semibold capitalize">${patient.severity || 'N/A'}</p>
+                                </div>
+                                ${patient.bodyLocation ? `
+                                <div class="bg-gray-50 p-3 rounded col-span-2">
+                                    <span class="text-gray-600">Body Location:</span>
+                                    <p class="font-semibold capitalize">${patient.bodyLocation}</p>
+                                </div>` : ''}
+                            </div>
+                            ${patient.redFlags && Array.isArray(patient.redFlags) && patient.redFlags.length > 0 ? `
+                            <div class="mt-3 bg-red-50 border border-red-200 p-3 rounded">
+                                <p class="text-sm font-bold text-red-900 mb-1">⚠️ Red Flags:</p>
+                                <p class="text-sm text-red-800">${patient.redFlags.filter(f => f !== 'none').join(', ') || 'None'}</p>
+                            </div>` : ''}
+                        </div>
+
+                        <!-- Recommendation -->
+                        <div>
+                            <h3 class="font-bold text-lg mb-3 flex items-center border-b pb-2">
+                                <span class="mr-2">💡</span> Clinical Recommendation
+                            </h3>
+                            <div class="${colors.bg} p-4 rounded border-2 ${colors.border}">
+                                <p class="font-semibold ${colors.text} mb-2">${patient.triageAction || 'No action specified'}</p>
+                                <p class="text-gray-700 text-sm">${patient.reasoning || 'No reasoning provided'}</p>
                             </div>
                         </div>
-                        <div>
-                            <h3 class="font-bold text-lg mb-2">Recommendation</h3>
-                            <p class="text-gray-700">${patient.reasoning || 'No recommendation provided'}</p>
-                        </div>
+
                         ${patient.instructions && patient.instructions.length > 0 ? `
-                            <div>
-                                <h3 class="font-bold text-lg mb-2">Instructions</h3>
-                                <ul class="list-disc list-inside space-y-1 text-sm">
-                                    ${patient.instructions.map(inst => `<li>${inst}</li>`).join('')}
-                                </ul>
-                            </div>
-                        ` : ''}
-                        <div class="flex gap-3 pt-4">
-                            <button onclick="markAsSeen('${patient.id}'); this.closest('.fixed').remove();" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700">
+                        <div>
+                            <h3 class="font-bold text-lg mb-3 flex items-center border-b pb-2">
+                                <span class="mr-2">📋</span> Instructions
+                            </h3>
+                            <ul class="space-y-2">
+                                ${patient.instructions.map(inst => `
+                                    <li class="flex items-start bg-indigo-50 p-3 rounded">
+                                        <span class="text-indigo-600 mr-2 font-bold">→</span>
+                                        <span class="text-gray-800">${inst}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>` : ''}
+
+                        <!-- Action Buttons -->
+                        <div class="flex gap-3 pt-4 sticky bottom-0 bg-white pb-4">
+                            <button onclick="markAsSeen('${patient.id}'); this.closest('.fixed').remove();" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">
                                 ✓ Mark as Seen
                             </button>
-                            <button onclick="this.closest('.fixed').remove()" class="flex-1 bg-gray-600 text-white py-3 rounded-lg font-bold hover:bg-gray-700">
+                            <button onclick="this.closest('.fixed').remove()" class="flex-1 bg-gray-600 text-white py-3 rounded-lg font-bold hover:bg-gray-700 transition">
                                 Close
                             </button>
                         </div>
