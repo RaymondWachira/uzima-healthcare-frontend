@@ -13,6 +13,9 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .fade-in { animation: fadeIn 0.5s ease-out; }
+        
+        details summary::-webkit-details-marker { display: none; }
+        details[open] summary { border-bottom: 2px solid #a855f7; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-teal-50 via-blue-50 to-indigo-100 min-h-screen">
@@ -28,7 +31,7 @@
                     <div>
                         <h1 class="text-3xl font-bold text-white">Uzima Healthcare</h1>
                         <p class="text-teal-100 text-sm font-medium">Smart Triage System</p>
-                        <p class="text-teal-200 text-xs">Comprehensive Patient Assessment</p>
+                        <p class="text-teal-200 text-xs">Fast, Accurate, Comprehensive</p>
                     </div>
                 </div>
             </div>
@@ -41,15 +44,15 @@
             <div class="flex items-center justify-center gap-8 text-white text-sm font-semibold flex-wrap">
                 <div class="flex items-center">
                     <span class="text-2xl mr-2">⚡</span>
-                    <span>40% Wait Time Reduction</span>
+                    <span>2 Min Assessment</span>
                 </div>
                 <div class="flex items-center">
                     <span class="text-2xl mr-2">👥</span>
-                    <span>40% Capacity Increase</span>
+                    <span>40% Wait Reduction</span>
                 </div>
                 <div class="flex items-center">
                     <span class="text-2xl mr-2">😊</span>
-                    <span>Better Patient Experience</span>
+                    <span>Better Care</span>
                 </div>
             </div>
         </div>
@@ -58,13 +61,39 @@
     <!-- Main Container -->
     <div class="max-w-4xl mx-auto px-4 py-8">
         
+        <!-- Returning Patient Section -->
+        <div id="returning-patient" class="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl shadow-lg p-6 border-2 border-purple-300">
+            <div class="flex items-center mb-4">
+                <span class="text-3xl mr-3">👋</span>
+                <div>
+                    <p class="text-lg font-bold text-purple-900">Welcome Back!</p>
+                    <p class="text-sm text-purple-700">Returning patient? Load your saved profile</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <input 
+                    type="tel" 
+                    id="returning-phone"
+                    placeholder="+254712345678"
+                    class="flex-1 px-4 py-3 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                />
+                <button 
+                    onclick="loadUserProfile()"
+                    class="bg-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-purple-700 transition"
+                >
+                    📂 Load Profile
+                </button>
+            </div>
+            <p class="text-xs text-purple-600 mt-2">💡 First time? Fill the form below and save your profile for next time!</p>
+        </div>
+
         <!-- Demo Buttons -->
         <div id="demo-buttons" class="mb-6 bg-white rounded-xl shadow-lg p-6 border-t-4 border-teal-500">
             <div class="flex items-center mb-4">
                 <span class="text-2xl mr-3">🎯</span>
                 <div>
                     <p class="text-lg font-bold text-gray-800">Quick Demo</p>
-                    <p class="text-sm text-gray-600">Click to see how Uzima routes different cases</p>
+                    <p class="text-sm text-gray-600">See how Uzima routes different cases</p>
                 </div>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -93,36 +122,45 @@
                 <div class="inline-block bg-teal-100 rounded-full p-4 mb-4">
                     <span class="text-5xl">📋</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Patient Pre-Visit Assessment</h2>
-                <p class="text-gray-600">Complete this comprehensive assessment for accurate triage</p>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Patient Assessment</h2>
+                <p class="text-gray-600">Complete core fields in 2 minutes</p>
                 <div class="mt-4 inline-block bg-blue-50 px-4 py-2 rounded-lg">
-                    <p class="text-sm text-blue-800">⏱️ Takes <strong>3-4 minutes</strong> | Saves you <strong>30+ minutes</strong></p>
+                    <p class="text-sm text-blue-800">⏱️ Core: <strong>2 minutes</strong> | Optional: <strong>+1 minute</strong></p>
                 </div>
             </div>
 
             <form id="triage-form" class="space-y-6">
                 
-                <!-- SECTION 1: PERSONAL INFORMATION -->
-                <div class="border-l-4 border-teal-500 pl-4 mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">📝 Personal Information</h3>
-                    
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <!-- Phone Number -->
-                        <div>
-                            <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
-                                📱 Phone Number *
-                            </label>
-                            <input 
-                                type="tel" 
-                                id="phone" 
-                                name="phone"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                                placeholder="+254712345678"
-                                required
-                            />
-                        </div>
+                <!-- Fast Track Banner -->
+                <div class="bg-gradient-to-r from-green-400 to-teal-500 text-white p-4 rounded-lg text-center">
+                    <p class="font-bold text-lg">⚡ Fast Track Triage</p>
+                    <p class="text-sm">Answer core questions below | Optional details can be added after</p>
+                </div>
 
-                        <!-- Patient Name -->
+                <!-- CORE FIELDS -->
+                <div class="border-l-4 border-teal-600 pl-6 bg-teal-50 p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-teal-900 mb-6 flex items-center">
+                        <span class="text-3xl mr-3">🏥</span>
+                        Essential Information
+                    </h3>
+                    
+                    <!-- Phone -->
+                    <div class="mb-4">
+                        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+                            📱 Phone Number *
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="phone" 
+                            name="phone"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                            placeholder="+254712345678"
+                            required
+                        />
+                    </div>
+
+                    <!-- Name and Age -->
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label for="patient-name" class="block text-sm font-semibold text-gray-700 mb-2">
                                 👤 Full Name *
@@ -136,8 +174,6 @@
                                 required
                             />
                         </div>
-
-                        <!-- Age -->
                         <div>
                             <label for="patient-age" class="block text-sm font-semibold text-gray-700 mb-2">
                                 🎂 Age *
@@ -153,130 +189,7 @@
                                 required
                             />
                         </div>
-
-                        <!-- Gender -->
-                        <div>
-                            <label for="gender" class="block text-sm font-semibold text-gray-700 mb-2">
-                                ⚧️ Gender *
-                            </label>
-                            <select 
-                                id="gender" 
-                                name="gender"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                                required
-                            >
-                                <option value="" disabled selected>Select gender...</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <!-- Weight -->
-                        <div>
-                            <label for="weight" class="block text-sm font-semibold text-gray-700 mb-2">
-                                ⚖️ Weight (kg)
-                            </label>
-                            <input 
-                                type="number" 
-                                id="weight" 
-                                name="weight"
-                                min="0"
-                                step="0.1"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                                placeholder="e.g., 65"
-                            />
-                        </div>
-
-                        <!-- Height -->
-                        <div>
-                            <label for="height" class="block text-sm font-semibold text-gray-700 mb-2">
-                                📏 Height (cm)
-                            </label>
-                            <input 
-                                type="number" 
-                                id="height" 
-                                name="height"
-                                min="0"
-                                step="0.1"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                                placeholder="e.g., 165"
-                            />
-                        </div>
-
-                        <!-- Location -->
-                        <div class="md:col-span-2">
-                            <label for="location" class="block text-sm font-semibold text-gray-700 mb-2">
-                                📍 County/Location
-                            </label>
-                            <input 
-                                type="text" 
-                                id="location" 
-                                name="location"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
-                                placeholder="e.g., Nairobi"
-                            />
-                        </div>
                     </div>
-                </div>
-
-                <!-- SECTION 2: MEDICAL HISTORY -->
-                <div class="border-l-4 border-purple-500 pl-4 mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">🏥 Medical History</h3>
-                    
-                    <!-- Allergies -->
-                    <div class="mb-4">
-                        <label for="allergies" class="block text-sm font-semibold text-gray-700 mb-2">
-                            ⚠️ Known Allergies
-                        </label>
-                        <textarea 
-                            id="allergies" 
-                            name="allergies"
-                            rows="2" 
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
-                            placeholder="e.g., Penicillin, Peanuts, None"
-                        ></textarea>
-                    </div>
-
-                    <!-- Current Medications -->
-                    <div class="mb-4">
-                        <label for="medications" class="block text-sm font-semibold text-gray-700 mb-2">
-                            💊 Current Medications
-                        </label>
-                        <textarea 
-                            id="medications" 
-                            name="medications"
-                            rows="2" 
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
-                            placeholder="List any medications you're currently taking"
-                        ></textarea>
-                    </div>
-
-                    <!-- Travel History -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-3">
-                            ✈️ Travel History (Last 14 Days)
-                        </label>
-                        <div class="flex items-center space-x-4">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="travel" value="no" class="mr-2" checked>
-                                <span>No travel</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="travel" value="domestic" class="mr-2">
-                                <span>Domestic</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="travel" value="international" class="mr-2">
-                                <span>International</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECTION 3: CURRENT SYMPTOMS -->
-                <div class="border-l-4 border-red-500 pl-4 mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">🩺 Current Symptoms</h3>
 
                     <!-- Chief Complaint -->
                     <div class="mb-4">
@@ -287,45 +200,21 @@
                             id="chief-complaint" 
                             name="chief-complaint"
                             rows="4" 
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
-                            placeholder="Describe your main symptom or concern in detail..."
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+                            placeholder="Describe your main symptom or concern..."
                             required
                         ></textarea>
-                    </div>
-
-                    <!-- Body Location -->
-                    <div class="mb-4">
-                        <label for="body-location" class="block text-sm font-semibold text-gray-700 mb-2">
-                            🎯 Location of Symptoms
-                        </label>
-                        <select 
-                            id="body-location" 
-                            name="body-location"
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
-                        >
-                            <option value="">Select body area...</option>
-                            <option value="head">Head/Face</option>
-                            <option value="neck">Neck</option>
-                            <option value="chest">Chest</option>
-                            <option value="abdomen">Abdomen/Stomach</option>
-                            <option value="back">Back</option>
-                            <option value="arms">Arms/Hands</option>
-                            <option value="legs">Legs/Feet</option>
-                            <option value="skin">Skin (general)</option>
-                            <option value="multiple">Multiple areas</option>
-                            <option value="general">General/Whole body</option>
-                        </select>
                     </div>
 
                     <!-- Duration -->
                     <div class="mb-4">
                         <label for="duration" class="block text-sm font-semibold text-gray-700 mb-2">
-                            📅 Duration of symptoms *
+                            📅 How long have you had these symptoms? *
                         </label>
                         <select 
                             id="duration" 
                             name="duration"
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition" 
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition" 
                             required
                         >
                             <option value="" disabled selected>Select duration...</option>
@@ -338,7 +227,7 @@
                     </div>
 
                     <!-- Severity -->
-                    <div>
+                    <div class="mb-4">
                         <label class="block text-sm font-semibold text-gray-700 mb-3">
                             📊 Severity Rating *
                         </label>
@@ -348,7 +237,6 @@
                                 <div class="border-2 border-gray-300 peer-checked:border-green-500 peer-checked:bg-green-50 rounded-lg p-4 text-center transition hover:border-green-400">
                                     <div class="text-4xl mb-2">😊</div>
                                     <div class="font-semibold text-green-700">Mild</div>
-                                    <div class="text-xs text-gray-600">Manageable</div>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
@@ -356,7 +244,6 @@
                                 <div class="border-2 border-gray-300 peer-checked:border-yellow-500 peer-checked:bg-yellow-50 rounded-lg p-4 text-center transition hover:border-yellow-400">
                                     <div class="text-4xl mb-2">😐</div>
                                     <div class="font-semibold text-yellow-700">Moderate</div>
-                                    <div class="text-xs text-gray-600">Significant</div>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
@@ -364,47 +251,142 @@
                                 <div class="border-2 border-gray-300 peer-checked:border-red-500 peer-checked:bg-red-50 rounded-lg p-4 text-center transition hover:border-red-400">
                                     <div class="text-4xl mb-2">😣</div>
                                     <div class="font-semibold text-red-700">Severe</div>
-                                    <div class="text-xs text-gray-600">Very painful</div>
                                 </div>
                             </label>
                         </div>
                     </div>
-                </div>
 
-                <!-- Red Flags -->
-                <div class="border-l-4 border-red-600 pl-4">
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">
-                        ⚠️ Emergency Warning Signs
-                    </label>
-                    <div class="bg-red-50 border-2 border-red-200 rounded-lg p-5">
-                        <div class="space-y-3">
-                            <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
-                                <input type="checkbox" name="red-flags" value="chest-pain" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800">💔 Chest pain or pressure</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
-                                <input type="checkbox" name="red-flags" value="breathing" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800">😮‍💨 Severe difficulty breathing</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
-                                <input type="checkbox" name="red-flags" value="confusion" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800">😵 Confusion or altered consciousness</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
-                                <input type="checkbox" name="red-flags" value="bleeding" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800">🩸 Severe bleeding</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
-                                <input type="checkbox" name="red-flags" value="high-fever" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800">🌡️ Very high fever with confusion</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer hover:bg-green-100 p-2 rounded border-t-2 border-green-200 mt-3 pt-3">
-                                <input type="checkbox" name="red-flags" value="none" class="mr-3 w-4 h-4">
-                                <span class="text-gray-800 font-bold">✅ None of these</span>
-                            </label>
+                    <!-- Red Flags -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            ⚠️ Emergency Warning Signs *
+                        </label>
+                        <div class="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+                            <div class="space-y-2">
+                                <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
+                                    <input type="checkbox" name="red-flags" value="chest-pain" class="mr-3 w-4 h-4">
+                                    <span class="text-sm">💔 Chest pain or pressure</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
+                                    <input type="checkbox" name="red-flags" value="breathing" class="mr-3 w-4 h-4">
+                                    <span class="text-sm">😮‍💨 Severe difficulty breathing</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
+                                    <input type="checkbox" name="red-flags" value="confusion" class="mr-3 w-4 h-4">
+                                    <span class="text-sm">😵 Confusion or altered consciousness</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
+                                    <input type="checkbox" name="red-flags" value="bleeding" class="mr-3 w-4 h-4">
+                                    <span class="text-sm">🩸 Severe bleeding</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer hover:bg-red-100 p-2 rounded">
+                                    <input type="checkbox" name="red-flags" value="high-fever" class="mr-3 w-4 h-4">
+                                    <span class="text-sm">🌡️ Very high fever with confusion</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer hover:bg-green-100 p-2 rounded border-t-2 border-green-200 mt-2 pt-2">
+                                    <input type="checkbox" name="red-flags" value="none" class="mr-3 w-4 h-4">
+                                    <span class="text-sm font-bold">✅ None of these</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- OPTIONAL FIELDS (Collapsible) -->
+                <details class="border-2 border-purple-300 rounded-lg bg-purple-50 hover:bg-purple-100 transition">
+                    <summary class="cursor-pointer p-6 font-bold text-purple-900 flex items-center justify-between select-none">
+                        <span class="flex items-center">
+                            <span class="text-2xl mr-3">➕</span>
+                            <span>Additional Medical Information (Optional)</span>
+                        </span>
+                        <span class="text-sm text-purple-600 font-normal">Click to expand • Helps improve care</span>
+                    </summary>
+                    
+                    <div class="p-6 space-y-6 bg-white border-t-2 border-purple-200">
+                        
+                        <!-- Personal Details -->
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <h4 class="font-bold text-lg text-gray-800 mb-4">📋 Personal Details</h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="gender" class="block text-sm font-semibold text-gray-700 mb-2">Gender</label>
+                                    <select id="gender" name="gender" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                        <option value="">Select...</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="weight" class="block text-sm font-semibold text-gray-700 mb-2">Weight (kg)</label>
+                                    <input type="number" id="weight" name="weight" step="0.1" placeholder="65" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                </div>
+                                <div>
+                                    <label for="height" class="block text-sm font-semibold text-gray-700 mb-2">Height (cm)</label>
+                                    <input type="number" id="height" name="height" step="0.1" placeholder="165" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label for="location" class="block text-sm font-semibold text-gray-700 mb-2">County/Location</label>
+                                <input type="text" id="location" name="location" placeholder="e.g., Nairobi" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+
+                        <!-- Medical History -->
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h4 class="font-bold text-lg text-gray-800 mb-4">🏥 Medical History</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="allergies" class="block text-sm font-semibold text-gray-700 mb-2">Known Allergies</label>
+                                    <textarea id="allergies" name="allergies" rows="2" placeholder="e.g., Penicillin, Peanuts" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                                </div>
+                                <div>
+                                    <label for="medications" class="block text-sm font-semibold text-gray-700 mb-2">Current Medications</label>
+                                    <textarea id="medications" name="medications" rows="2" placeholder="List any medications you're taking" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Travel History (Last 14 Days)</label>
+                                    <div class="flex gap-4 flex-wrap">
+                                        <label class="flex items-center">
+                                            <input type="radio" name="travel" value="no" class="mr-2" checked> 
+                                            <span class="text-sm">No travel</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="travel" value="domestic" class="mr-2"> 
+                                            <span class="text-sm">Domestic</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="travel" value="international" class="mr-2"> 
+                                            <span class="text-sm">International</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Symptom Details -->
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h4 class="font-bold text-lg text-gray-800 mb-4">🩺 Symptom Details</h4>
+                            <div>
+                                <label for="body-location" class="block text-sm font-semibold text-gray-700 mb-2">Body Location</label>
+                                <select id="body-location" name="body-location" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                    <option value="">Select area...</option>
+                                    <option value="head">Head/Face</option>
+                                    <option value="neck">Neck</option>
+                                    <option value="chest">Chest</option>
+                                    <option value="abdomen">Abdomen/Stomach</option>
+                                    <option value="back">Back</option>
+                                    <option value="arms">Arms/Hands</option>
+                                    <option value="legs">Legs/Feet</option>
+                                    <option value="skin">Skin (general)</option>
+                                    <option value="multiple">Multiple areas</option>
+                                    <option value="general">General/Whole body</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </details>
 
                 <!-- Submit Button -->
                 <button 
@@ -433,7 +415,7 @@
                     <span class="text-3xl">🏥</span>
                 </div>
                 <h3 class="text-2xl font-bold">Uzima Healthcare</h3>
-                <p class="text-teal-100 text-sm">Comprehensive Smart Triage System</p>
+                <p class="text-teal-100 text-sm">Fast, Smart, Comprehensive Triage</p>
             </div>
         </div>
     </div>
@@ -496,17 +478,19 @@
             document.getElementById('phone').value = p.phone;
             document.getElementById('patient-name').value = p.name;
             document.getElementById('patient-age').value = p.age;
-            document.getElementById('gender').value = p.gender;
+            document.getElementById('chief-complaint').value = p.chiefComplaint;
+            document.getElementById('duration').value = p.duration;
+            document.querySelector(`input[name="severity"][value="${p.severity}"]`).checked = true;
+            
+            // Optional fields
+            if (p.gender) document.getElementById('gender').value = p.gender;
             if (p.weight) document.getElementById('weight').value = p.weight;
             if (p.height) document.getElementById('height').value = p.height;
             if (p.location) document.getElementById('location').value = p.location;
             if (p.allergies) document.getElementById('allergies').value = p.allergies;
             if (p.medications) document.getElementById('medications').value = p.medications;
             document.querySelector(`input[name="travel"][value="${p.travel}"]`).checked = true;
-            document.getElementById('chief-complaint').value = p.chiefComplaint;
             if (p.bodyLocation) document.getElementById('body-location').value = p.bodyLocation;
-            document.getElementById('duration').value = p.duration;
-            document.querySelector(`input[name="severity"][value="${p.severity}"]`).checked = true;
             
             document.querySelectorAll('input[name="red-flags"]').forEach(cb => cb.checked = false);
             p.redFlags.forEach(flag => {
@@ -515,6 +499,82 @@
             });
 
             document.getElementById('triage-form-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Load User Profile
+        async function loadUserProfile() {
+            const phone = document.getElementById('returning-phone').value;
+            if (!phone) {
+                alert('Please enter your phone number');
+                return;
+            }
+
+            try {
+                const snapshot = await db.collection('user_profiles').where('phone', '==', phone).limit(1).get();
+                if (snapshot.empty) {
+                    alert('No profile found for this number. Please fill the form below to create one!');
+                    return;
+                }
+
+                const profile = snapshot.docs[0].data();
+                
+                // Fill in saved data
+                document.getElementById('phone').value = profile.phone;
+                document.getElementById('patient-name').value = profile.name;
+                document.getElementById('patient-age').value = profile.age;
+                if (profile.gender) document.getElementById('gender').value = profile.gender;
+                if (profile.weight) document.getElementById('weight').value = profile.weight;
+                if (profile.height) document.getElementById('height').value = profile.height;
+                if (profile.location) document.getElementById('location').value = profile.location;
+                if (profile.allergies) document.getElementById('allergies').value = profile.allergies;
+                if (profile.medications) document.getElementById('medications').value = profile.medications;
+                
+                // Scroll to form
+                document.getElementById('triage-form-container').scrollIntoView({ behavior: 'smooth' });
+                
+                // Show success message
+                alert('✅ Profile loaded! Just fill in your current symptoms and submit.');
+                
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                alert('Error loading profile. Please try again.');
+            }
+        }
+
+        // Save User Profile
+        async function saveUserProfile(formData) {
+            try {
+                const profileData = {
+                    phone: formData.phone,
+                    name: formData.name,
+                    age: formData.age,
+                    gender: formData.gender || null,
+                    weight: formData.weight || null,
+                    height: formData.height || null,
+                    location: formData.location || null,
+                    allergies: formData.allergies || 'None',
+                    medications: formData.medications || 'None',
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // Check if profile exists
+                const existing = await db.collection('user_profiles').where('phone', '==', formData.phone).limit(1).get();
+                
+                if (existing.empty) {
+                    // Create new profile
+                    await db.collection('user_profiles').add(profileData);
+                    console.log('✅ Profile created');
+                    return true;
+                } else {
+                    // Update existing profile
+                    await db.collection('user_profiles').doc(existing.docs[0].id).update(profileData);
+                    console.log('✅ Profile updated');
+                    return false; // Not new
+                }
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                return null;
+            }
         }
 
         // Triage Logic
@@ -577,7 +637,7 @@
                 phone: document.getElementById('phone').value,
                 name: document.getElementById('patient-name').value,
                 age: document.getElementById('patient-age').value,
-                gender: document.getElementById('gender').value,
+                gender: document.getElementById('gender').value || null,
                 weight: document.getElementById('weight').value || null,
                 height: document.getElementById('height').value || null,
                 location: document.getElementById('location').value || null,
@@ -598,6 +658,7 @@
             try {
                 const refId = 'WEB' + Date.now().toString().slice(-8);
                 
+                // Save assessment
                 if (db !== null) {
                     await db.collection('assessments').add({
                         ...formData,
@@ -614,9 +675,11 @@
                         refId: refId,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                    console.log('✅ Saved to Firebase');
-                } else {
-                    console.log('⚠️ Firebase not initialized');
+                    console.log('✅ Assessment saved');
+                    
+                    // Save/update user profile
+                    const isNewProfile = await saveUserProfile(formData);
+                    formData.isNewProfile = isNewProfile;
                 }
                 
                 displayResult(triageResult, formData, refId);
@@ -638,9 +701,11 @@
             const resultsDiv = document.getElementById('results');
             const formDiv = document.getElementById('triage-form-container');
             const demoButtons = document.getElementById('demo-buttons');
+            const returningSection = document.getElementById('returning-patient');
             
             formDiv.classList.add('hidden');
             demoButtons.classList.add('hidden');
+            returningSection.classList.add('hidden');
             resultsDiv.classList.remove('hidden');
             resultsDiv.classList.add('fade-in');
             
@@ -654,14 +719,37 @@
             const colors = colorMap[result.color];
             const queueNum = generateQueueNumber(result.priority);
             
+            // Profile save notification
+            let profileNotification = '';
+            if (formData.isNewProfile === true) {
+                profileNotification = `
+                    <div class="bg-green-100 border-2 border-green-500 p-4 rounded-lg mb-6 text-center">
+                        <p class="text-green-900 font-bold">✅ Profile Saved!</p>
+                        <p class="text-sm text-green-700">Next time, just enter your phone number to load your info instantly!</p>
+                    </div>
+                `;
+            } else if (formData.isNewProfile === false) {
+                profileNotification = `
+                    <div class="bg-blue-100 border-2 border-blue-500 p-4 rounded-lg mb-6 text-center">
+                        <p class="text-blue-900 font-bold">🔄 Profile Updated!</p>
+                        <p class="text-sm text-blue-700">Your information has been updated in our system.</p>
+                    </div>
+                `;
+            }
+            
             resultsDiv.innerHTML = `
                 <div class="bg-white rounded-xl shadow-2xl p-8 mb-6 border-t-8 ${colors.border}">
+                    
+                    ${profileNotification}
+                    
+                    <!-- Queue Position -->
                     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-xl mb-6 text-center">
                         <div class="text-sm font-semibold mb-2">YOUR QUEUE POSITION</div>
                         <div class="text-5xl font-bold mb-2">${queueNum}</div>
                         <div class="text-lg font-semibold mt-2">Estimated wait: ${result.waitTime}</div>
                     </div>
 
+                    <!-- Triage Result -->
                     <div class="${colors.bg} p-6 rounded-xl mb-6 border-2 ${colors.border}">
                         <div class="flex items-center mb-4">
                             <span class="text-6xl mr-4">${result.icon}</span>
@@ -675,6 +763,47 @@
                         <p class="text-lg ${colors.text} mb-4">${result.reasoning}</p>
                     </div>
 
+                    <!-- Emergency Resources -->
+                    <div class="bg-red-50 border-l-4 border-red-600 p-6 rounded-lg mb-6">
+                        <h3 class="text-2xl font-bold text-red-900 mb-4 flex items-center">
+                            <span class="text-3xl mr-3">🚨</span>
+                            Emergency Resources
+                        </h3>
+                        
+                        <div class="bg-white p-4 rounded-lg mb-4">
+                            <h4 class="font-bold text-lg mb-3 text-gray-800">📞 Kenya Emergency Hotlines</h4>
+                            <div class="grid md:grid-cols-2 gap-3">
+                                <a href="tel:999" class="flex items-center justify-between bg-red-600 text-white p-3 rounded-lg hover:bg-red-700 transition">
+                                    <span class="font-semibold">🚨 Emergency</span>
+                                    <span class="text-xl font-bold">999</span>
+                                </a>
+                                <a href="tel:+254202272763" class="flex items-center justify-between bg-orange-600 text-white p-3 rounded-lg hover:bg-orange-700 transition">
+                                    <span class="font-semibold text-sm">🚑 Ambulance</span>
+                                    <span class="text-sm font-bold">0202272763</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg">
+                            <h4 class="font-bold text-lg mb-3 text-gray-800">🏥 Major Nairobi Hospitals</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between items-center p-2 bg-teal-50 rounded">
+                                    <span class="font-semibold">Kenyatta National Hospital</span>
+                                    <a href="tel:+254202726300" class="bg-teal-600 text-white px-3 py-1 rounded text-xs hover:bg-teal-700">Call</a>
+                                </div>
+                                <div class="flex justify-between items-center p-2 bg-blue-50 rounded">
+                                    <span class="font-semibold">Nairobi Hospital</span>
+                                    <a href="tel:+254202845000" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">Call</a>
+                                </div>
+                                <div class="flex justify-between items-center p-2 bg-green-50 rounded">
+                                    <span class="font-semibold">Aga Khan Hospital</span>
+                                    <a href="tel:+254203662000" class="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700">Call</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Steps -->
                     <div class="bg-indigo-50 p-6 rounded-xl mb-6">
                         <h3 class="text-xl font-bold mb-4">📋 Next Steps</h3>
                         <ul class="space-y-2">
@@ -687,25 +816,22 @@
                         </ul>
                     </div>
 
+                    <!-- Assessment Summary -->
                     <div class="bg-gray-50 p-6 rounded-xl mb-6">
                         <h3 class="text-xl font-bold mb-4">📊 Assessment Summary</h3>
-                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="grid md:grid-cols-2 gap-3 text-sm">
                             <div><strong>Reference:</strong> ${refId}</div>
                             <div><strong>Queue:</strong> ${queueNum}</div>
                             <div><strong>Name:</strong> ${formData.name}</div>
                             <div><strong>Age:</strong> ${formData.age}</div>
-                            <div><strong>Gender:</strong> ${formData.gender}</div>
                             <div><strong>Phone:</strong> ${formData.phone}</div>
+                            ${formData.gender ? `<div><strong>Gender:</strong> ${formData.gender}</div>` : ''}
                             ${formData.location ? `<div><strong>Location:</strong> ${formData.location}</div>` : ''}
-                            ${formData.weight ? `<div><strong>Weight:</strong> ${formData.weight} kg</div>` : ''}
-                            ${formData.height ? `<div><strong>Height:</strong> ${formData.height} cm</div>` : ''}
-                            <div><strong>Allergies:</strong> ${formData.allergies}</div>
-                            <div><strong>Medications:</strong> ${formData.medications}</div>
-                            <div><strong>Travel:</strong> ${formData.travel}</div>
                             <div class="md:col-span-2"><strong>Symptoms:</strong> ${formData.chiefComplaint}</div>
                         </div>
                     </div>
 
+                    <!-- Action Buttons -->
                     <div class="grid md:grid-cols-2 gap-4">
                         <button onclick="resetForm()" class="bg-gray-600 text-white py-3 rounded-lg font-bold hover:bg-gray-700 transition">
                             ← Assess Another Patient
@@ -723,6 +849,7 @@
         function resetForm() {
             document.getElementById('triage-form-container').classList.remove('hidden');
             document.getElementById('demo-buttons').classList.remove('hidden');
+            document.getElementById('returning-patient').classList.remove('hidden');
             document.getElementById('results').classList.add('hidden');
             document.getElementById('triage-form').reset();
             document.getElementById('submit-btn').disabled = false;
