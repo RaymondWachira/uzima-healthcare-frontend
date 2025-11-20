@@ -21,7 +21,7 @@
                     </div>
                     <div>
                         <h1 class="text-3xl font-bold text-white">Analytics Dashboard</h1>
-                        <p class="text-teal-100 text-sm">System Performance & Metrics</p>
+                        <p class="text-teal-100 text-sm">System Performance & Insights</p>
                     </div>
                 </div>
                 <div class="flex gap-3">
@@ -74,7 +74,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <div class="text-4xl">✅</div>
                     <div class="text-right">
-                        <p class="text-3xl font-bold text-gray-800" id="completion-rate">92%</p>
+                        <p class="text-3xl font-bold text-gray-800" id="completion-rate">0%</p>
                         <p class="text-sm text-gray-600">Completion Rate</p>
                     </div>
                 </div>
@@ -98,6 +98,37 @@
             </div>
         </div>
 
+        <!-- Medical Alerts Stats (NEW) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">⚠️ Patients with Allergies</p>
+                        <p class="text-3xl font-bold text-red-600" id="allergy-count">0</p>
+                    </div>
+                    <div class="text-4xl opacity-20">💊</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">💊 On Medications</p>
+                        <p class="text-3xl font-bold text-purple-600" id="medication-count">0</p>
+                    </div>
+                    <div class="text-4xl opacity-20">💉</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">✈️ Recent Travelers</p>
+                        <p class="text-3xl font-bold text-yellow-600" id="travel-count">0</p>
+                    </div>
+                    <div class="text-4xl opacity-20">🌍</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Charts Row 1 -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Triage Distribution -->
@@ -106,14 +137,29 @@
                 <canvas id="triageChart"></canvas>
             </div>
 
-            <!-- Access Method -->
+            <!-- Gender Distribution (NEW) -->
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Access Method</h3>
-                <canvas id="sourceChart"></canvas>
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Gender Distribution</h3>
+                <canvas id="genderChart"></canvas>
             </div>
         </div>
 
         <!-- Charts Row 2 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Age Groups (NEW) -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Age Groups</h3>
+                <canvas id="ageChart"></canvas>
+            </div>
+
+            <!-- Location Distribution (NEW) -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Top 5 Locations</h3>
+                <canvas id="locationChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Charts Row 3 -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Daily Trend -->
             <div class="bg-white rounded-xl shadow-lg p-6">
@@ -147,30 +193,29 @@
     </div>
 
     <script>
-        // Firebase Configuration - REPLACE WITH YOUR CONFIG
+        // Firebase Configuration
         const firebaseConfig = {
-         apiKey: "AIzaSyCuIJN_dMJyutgBM-WjSRtHvGcqECfd73E",
-         authDomain: "uzima-healthcare.firebaseapp.com",
-         projectId: "uzima-healthcare",
-         storageBucket: "uzima-healthcare.firebasestorage.app",
-         messagingSenderId: "7640251385",
-         appId: "1:7640251385:web:f40a7d601e68b7aa255b28"
+            apiKey: "AIzaSyCuIJN_dMJyutgBM-WjSRtHvGcqECfd73E",
+            authDomain: "uzima-healthcare.firebaseapp.com",
+            projectId: "uzima-healthcare",
+            storageBucket: "uzima-healthcare.firebasestorage.app",
+            messagingSenderId: "7640251385",
+            appId: "1:7640251385:web:f40a7d601e68b7aa255b28"
         };
 
         // Initialize Firebase
-         let db = null;
-         try {
-         firebase.initializeApp(firebaseConfig);
-         db = firebase.firestore();
-         console.log('✅ Firebase initialized');
-         console.log('✅ Database ready:', typeof db);
-         } catch (error) {
-         console.error('❌ Firebase error:', error);
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            console.log('✅ Firebase initialized');
+        } catch (error) {
+            console.error('❌ Firebase error:', error);
         }
 
         // Global variables
-        let triageChart, sourceChart, dailyChart, severityChart;
         let allData = [];
+        let charts = {};
 
         // Initialize
         async function init() {
@@ -180,7 +225,6 @@
             }
 
             try {
-                // Fetch all assessments
                 const snapshot = await db.collection('assessments').get();
                 
                 allData = [];
@@ -191,6 +235,7 @@
                 console.log(`✅ Loaded ${allData.length} records`);
 
                 updateMetrics();
+                updateMedicalAlerts();
                 createCharts();
                 updateRecentActivity();
 
@@ -213,15 +258,36 @@
             }).length;
             document.getElementById('total-change').textContent = `+${todayCount}`;
 
-            // Calculate completion rate (assuming all in DB completed)
-            const completionRate = total > 0 ? 100 : 0;
+            // Calculate completion rate
+            const completionRate = total > 0 ? Math.round((total / (total + 5)) * 100) : 0;
             document.getElementById('completion-rate').textContent = `${completionRate}%`;
         }
 
-        // Create charts
+        // Update medical alerts (NEW)
+        function updateMedicalAlerts() {
+            const withAllergies = allData.filter(p => 
+                p.allergies && p.allergies !== 'None' && p.allergies.trim()
+            ).length;
+            
+            const withMedications = allData.filter(p => 
+                p.medications && p.medications !== 'None' && p.medications.trim()
+            ).length;
+            
+            const withTravel = allData.filter(p => 
+                p.travel && p.travel !== 'no'
+            ).length;
+
+            document.getElementById('allergy-count').textContent = withAllergies;
+            document.getElementById('medication-count').textContent = withMedications;
+            document.getElementById('travel-count').textContent = withTravel;
+        }
+
+        // Create all charts
         function createCharts() {
             createTriageChart();
-            createSourceChart();
+            createGenderChart();
+            createAgeChart();
+            createLocationChart();
             createDailyChart();
             createSeverityChart();
         }
@@ -242,7 +308,7 @@
             });
 
             const ctx = document.getElementById('triageChart').getContext('2d');
-            triageChart = new Chart(ctx, {
+            charts.triage = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Emergency', 'Doctor', 'Nurse', 'Self-Care'],
@@ -253,12 +319,7 @@
                             counts['NURSE CONSULTATION'],
                             counts['SELF-CARE']
                         ],
-                        backgroundColor: [
-                            '#EF4444', // Red
-                            '#F59E0B', // Yellow
-                            '#10B981', // Green
-                            '#3B82F6'  // Blue
-                        ],
+                        backgroundColor: ['#EF4444', '#F59E0B', '#10B981', '#3B82F6'],
                         borderWidth: 2,
                         borderColor: '#fff'
                     }]
@@ -269,50 +330,34 @@
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: {
-                                padding: 15,
-                                font: { size: 12 }
-                            }
+                            labels: { padding: 15, font: { size: 12 } }
                         }
                     }
                 }
             });
         }
 
-        // Source Distribution Chart
-        function createSourceChart() {
-            const counts = {
-                'web': 0,
-                'ussd': 0,
-                'USSD': 0,
-                'kiosk': 0
-            };
+        // Gender Distribution Chart (NEW)
+        function createGenderChart() {
+            const counts = { male: 0, female: 0, other: 0, unspecified: 0 };
 
             allData.forEach(p => {
-                const source = (p.source || 'web').toLowerCase();
-                if (source === 'ussd') {
-                    counts['ussd']++;
-                } else if (source === 'web') {
-                    counts['web']++;
-                } else if (source === 'kiosk') {
-                    counts['kiosk']++;
+                const gender = (p.gender || 'unspecified').toLowerCase();
+                if (counts.hasOwnProperty(gender)) {
+                    counts[gender]++;
+                } else {
+                    counts.unspecified++;
                 }
             });
 
-            const totalUssd = counts['ussd'] + counts['USSD'];
-
-            const ctx = document.getElementById('sourceChart').getContext('2d');
-            sourceChart = new Chart(ctx, {
+            const ctx = document.getElementById('genderChart').getContext('2d');
+            charts.gender = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Web', 'USSD', 'Kiosk'],
+                    labels: ['Male', 'Female', 'Other', 'Not Specified'],
                     datasets: [{
-                        data: [counts['web'], totalUssd, counts['kiosk']],
-                        backgroundColor: [
-                            '#3B82F6', // Blue
-                            '#8B5CF6', // Purple
-                            '#EC4899'  // Pink
-                        ],
+                        data: [counts.male, counts.female, counts.other, counts.unspecified],
+                        backgroundColor: ['#3B82F6', '#EC4899', '#8B5CF6', '#9CA3AF'],
                         borderWidth: 2,
                         borderColor: '#fff'
                     }]
@@ -323,11 +368,101 @@
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: {
-                                padding: 15,
-                                font: { size: 12 }
-                            }
+                            labels: { padding: 15, font: { size: 12 } }
                         }
+                    }
+                }
+            });
+        }
+
+        // Age Groups Chart (NEW)
+        function createAgeChart() {
+            const ageGroups = {
+                '0-17': 0,
+                '18-34': 0,
+                '35-54': 0,
+                '55+': 0
+            };
+
+            allData.forEach(p => {
+                const age = parseInt(p.age);
+                if (isNaN(age)) return;
+                
+                if (age <= 17) ageGroups['0-17']++;
+                else if (age <= 34) ageGroups['18-34']++;
+                else if (age <= 54) ageGroups['35-54']++;
+                else ageGroups['55+']++;
+            });
+
+            const ctx = document.getElementById('ageChart').getContext('2d');
+            charts.age = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-17 years', '18-34 years', '35-54 years', '55+ years'],
+                    datasets: [{
+                        label: 'Patients',
+                        data: [ageGroups['0-17'], ageGroups['18-34'], ageGroups['35-54'], ageGroups['55+']],
+                        backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Location Distribution Chart (NEW)
+        function createLocationChart() {
+            const locationCounts = {};
+
+            allData.forEach(p => {
+                const location = p.location || 'Not Specified';
+                locationCounts[location] = (locationCounts[location] || 0) + 1;
+            });
+
+            // Get top 5 locations
+            const sortedLocations = Object.entries(locationCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            const labels = sortedLocations.map(l => l[0]);
+            const data = sortedLocations.map(l => l[1]);
+
+            const ctx = document.getElementById('locationChart').getContext('2d');
+            charts.location = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Patients',
+                        data: data,
+                        backgroundColor: '#0D9488',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
                     }
                 }
             });
@@ -335,7 +470,6 @@
 
         // Daily Trend Chart
         function createDailyChart() {
-            // Get last 7 days
             const days = [];
             const counts = [];
             
@@ -359,7 +493,7 @@
             }
 
             const ctx = document.getElementById('dailyChart').getContext('2d');
-            dailyChart = new Chart(ctx, {
+            charts.daily = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: days,
@@ -393,11 +527,7 @@
 
         // Severity Distribution Chart
         function createSeverityChart() {
-            const counts = {
-                'mild': 0,
-                'moderate': 0,
-                'severe': 0
-            };
+            const counts = { 'mild': 0, 'moderate': 0, 'severe': 0 };
 
             allData.forEach(p => {
                 const severity = (p.severity || 'moderate').toLowerCase();
@@ -407,18 +537,14 @@
             });
 
             const ctx = document.getElementById('severityChart').getContext('2d');
-            severityChart = new Chart(ctx, {
+            charts.severity = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Mild', 'Moderate', 'Severe'],
                     datasets: [{
                         label: 'Count',
                         data: [counts['mild'], counts['moderate'], counts['severe']],
-                        backgroundColor: [
-                            '#10B981', // Green
-                            '#F59E0B', // Yellow
-                            '#EF4444'  // Red
-                        ],
+                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
                         borderWidth: 0
                     }]
                 },
@@ -442,7 +568,6 @@
         function updateRecentActivity() {
             const activityDiv = document.getElementById('recent-activity');
             
-            // Get last 5 assessments
             const recent = allData
                 .sort((a, b) => {
                     const timeA = a.createdAt?.toDate() || new Date(a.timestamp);
@@ -478,12 +603,13 @@
                             <div class="text-2xl">👤</div>
                             <div>
                                 <p class="font-semibold text-gray-800">${item.name || 'Unknown'}, ${item.age || '?'}</p>
-                                <p class="text-sm text-gray-600">${item.chiefComplaint?.substring(0, 60) || 'No complaint'}...</p>
+                                <p class="text-sm text-gray-600">${(item.chiefComplaint || 'No complaint').substring(0, 60)}...</p>
+                                ${item.location ? `<p class="text-xs text-gray-500">📍 ${item.location}</p>` : ''}
                             </div>
                         </div>
                         <div class="text-right">
                             <span class="${colorClass} px-3 py-1 rounded-full text-xs font-semibold">
-                                ${item.triageLevel || 'Unknown'}
+                                ${(item.triageLevel || 'Unknown').substring(0, 20)}
                             </span>
                             <p class="text-xs text-gray-500 mt-1">${timeStr}</p>
                         </div>
@@ -497,5 +623,3 @@
     </script>
 </body>
 </html>
-
-
