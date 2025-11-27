@@ -126,129 +126,105 @@ async function sendMessage() {
     
     addAITyping();
     
-    try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'anthropic-version': '2023-06-01'
-            },
-            body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 1000,
-                messages: [
-                    {
-                        role: 'user',
-                        content: `You are a medical triage AI assistant for Uzima Healthcare in Kenya. Your job is to:
-
-1. Have a natural, empathetic conversation with the patient
-2. Ask relevant follow-up questions about their symptoms
-3. Collect key information: name, age, phone, main complaint, duration, severity
-4. Assess urgency and provide triage recommendation
-
-Current conversation:
-${chatConversation.map(m => `${m.role}: ${m.content}`).join('\n')}
-
-Respond naturally and helpfully. If you've gathered enough information, provide a triage assessment (EMERGENCY, URGENT, STANDARD, or SELF-CARE) with clear next steps.`
-                    }
-                ]
-            })
-        });
-        
-        const data = await response.json();
-        
-        removeAITyping();
-        
-        if (data.content && data.content[0]) {
-            const aiResponse = data.content[0].text;
-            addAIMessage(aiResponse);
-            
-            chatConversation.push({
-                role: 'assistant',
-                content: aiResponse
-            });
-            
-            if (aiResponse.toLowerCase().includes('emergency') || 
-                aiResponse.toLowerCase().includes('urgent') ||
-                aiResponse.toLowerCase().includes('standard') ||
-                aiResponse.toLowerCase().includes('self-care')) {
-                
-                setTimeout(() => {
-                    addAIMessage("Would you like me to save this assessment and generate your queue number? Type 'yes' to save or 'no' to continue chatting.");
-                }, 1000);
-            }
-        } else {
-            addAIMessage("I'm sorry, I'm having trouble processing that. Could you try rephrasing?");
-        }
-        
-    } catch (error) {
-        console.error('Chat error:', error);
-        removeAITyping();
-        addAIMessage("I'm having technical difficulties. Please try the form option instead, or try again in a moment.");
-    }
+    // Simulate AI thinking time
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    removeAITyping();
+    
+    // Mock AI responses based on conversation stage
+    let aiResponse = generateMockResponse(message, chatConversation.length);
+    
+    addAIMessage(aiResponse);
+    
+    chatConversation.push({
+        role: 'assistant',
+        content: aiResponse
+    });
     
     input.disabled = false;
     document.getElementById('send-btn').disabled = false;
     input.focus();
 }
 
-// Demo Data
-const demoPatients = [
-    {
-        phone: "+254712345678", name: "Grace Wanjiru", age: "28", gender: "female",
-        weight: "65", height: "165", location: "Nairobi", allergies: "None",
-        medications: "None", travel: "no",
-        chiefComplaint: "Burning sensation when urinating, frequent urge to urinate, lower abdominal discomfort",
-        bodyLocation: "abdomen", duration: "1-7-days", severity: "moderate", redFlags: ["none"]
-    },
-    {
-        phone: "+254723456789", name: "John Kamau", age: "65", gender: "male",
-        weight: "78", height: "172", location: "Nairobi", allergies: "None",
-        medications: "Aspirin daily", travel: "no",
-        chiefComplaint: "Severe chest pain radiating to left arm, shortness of breath, heavy sweating, nausea",
-        bodyLocation: "chest", duration: "less-than-1-hour", severity: "severe", redFlags: ["chest-pain", "breathing"]
-    },
-    {
-        phone: "+254734567890", name: "Mary Achieng", age: "32", gender: "female",
-        weight: "60", height: "160", location: "Kisumu", allergies: "Peanuts",
-        medications: "None", travel: "no",
-        chiefComplaint: "Mild headache, runny nose, slight cough, feeling tired",
-        bodyLocation: "head", duration: "1-24-hours", severity: "mild", redFlags: ["none"]
-    },
-    {
-        phone: "+254745678901", name: "Peter Ochieng", age: "45", gender: "male",
-        weight: "72", height: "175", location: "Mombasa", allergies: "None",
-        medications: "None", travel: "international",
-        chiefComplaint: "Persistent cough for 3 weeks, night sweats, unexplained weight loss, fatigue",
-        bodyLocation: "chest", duration: "1-4-weeks", severity: "moderate", redFlags: ["none"]
+function generateMockResponse(userMessage, conversationLength) {
+    const msg = userMessage.toLowerCase();
+    
+    // First message - greeting
+    if (conversationLength === 1) {
+        return "Thank you for sharing that. To help assess your condition properly, I need to ask a few questions. First, can you tell me your name and age?";
     }
-];
-
-function loadDemo(index) {
-    const p = demoPatients[index];
-    document.getElementById('phone').value = p.phone;
-    document.getElementById('patient-name').value = p.name;
-    document.getElementById('patient-age').value = p.age;
-    document.getElementById('chief-complaint').value = p.chiefComplaint;
-    document.getElementById('duration').value = p.duration;
-    document.querySelector(`input[name="severity"][value="${p.severity}"]`).checked = true;
     
-    if (p.gender) document.getElementById('gender').value = p.gender;
-    if (p.weight) document.getElementById('weight').value = p.weight;
-    if (p.height) document.getElementById('height').value = p.height;
-    if (p.location) document.getElementById('location').value = p.location;
-    if (p.allergies) document.getElementById('allergies').value = p.allergies;
-    if (p.medications) document.getElementById('medications').value = p.medications;
-    document.querySelector(`input[name="travel"][value="${p.travel}"]`).checked = true;
-    if (p.bodyLocation) document.getElementById('body-location').value = p.bodyLocation;
+    // Collecting name/age
+    if (conversationLength === 3 && !collectedData.name) {
+        // Try to extract info
+        const ageMatch = msg.match(/\d+/);
+        if (ageMatch) {
+            collectedData.age = ageMatch[0];
+            collectedData.name = "Patient";
+        }
+        return "Thank you. Now, can you describe your main symptom? What's bothering you the most right now?";
+    }
     
-    document.querySelectorAll('input[name="red-flags"]').forEach(cb => cb.checked = false);
-    p.redFlags.forEach(flag => {
-        const checkbox = document.querySelector(`input[name="red-flags"][value="${flag}"]`);
-        if (checkbox) checkbox.checked = true;
-    });
-
-    document.getElementById('triage-form-container').scrollIntoView({ behavior: 'smooth' });
+    // Emergency keywords detection
+    if (msg.includes('chest pain') || msg.includes('heart') || msg.includes('breathing') || 
+        msg.includes('can\'t breathe') || msg.includes('severe pain')) {
+        return "I'm detecting symptoms that require immediate medical attention. Based on what you've told me, this is an EMERGENCY situation. Please go to the nearest emergency department immediately or call 999. Do not wait. Your symptoms suggest a potentially life-threatening condition that needs urgent care.";
+    }
+    
+    // UTI/urinary symptoms
+    if (msg.includes('burning') && (msg.includes('urinat') || msg.includes('pee')) || 
+        msg.includes('uti') || msg.includes('bladder')) {
+        return "I understand you're experiencing urinary discomfort. How long have you had these symptoms? And on a scale of 1-10, how would you rate the severity?";
+    }
+    
+    // After duration question
+    if (conversationLength > 5 && (msg.includes('day') || msg.includes('week') || msg.includes('hour'))) {
+        return "Thank you for that information. Based on our conversation, I recommend you see a NURSE or CLINICAL OFFICER within the next 15-20 minutes. Your condition can be managed by nursing staff. Would you like me to save this assessment and generate your queue number?";
+    }
+    
+    // Cold/flu symptoms
+    if (msg.includes('cold') || msg.includes('cough') || msg.includes('runny nose') || 
+        msg.includes('headache') || msg.includes('tired')) {
+        return "It sounds like you might have a common cold or flu. How long have you been experiencing these symptoms? And do you have any fever?";
+    }
+    
+    // Mild symptoms
+    if (msg.includes('mild') || msg.includes('slight')) {
+        return "Based on your description of mild symptoms, this might be manageable with SELF-CARE at home. I recommend rest, hydration, and over-the-counter pain relief if needed. However, if symptoms worsen or persist beyond a few days, please seek medical attention. Would you like me to save this recommendation?";
+    }
+    
+    // After severity rating
+    if (msg.match(/\d+/) && conversationLength > 4) {
+        const severity = parseInt(msg.match(/\d+/)[0]);
+        if (severity >= 7) {
+            return "A severity rating of " + severity + " indicates this is significant. I recommend you see a MEDICAL DOCTOR within 30-40 minutes. Your symptoms require physician evaluation. Would you like me to save this assessment and generate your queue number?";
+        } else {
+            return "Thank you. Based on our conversation, I recommend you see a healthcare provider for proper evaluation. Would you like me to save this assessment and generate your queue number?";
+        }
+    }
+    
+    // Yes to save
+    if (msg.includes('yes') || msg.includes('sure') || msg.includes('okay') || msg.includes('ok')) {
+        if (conversationLength > 6) {
+            return "Great! I've generated your assessment. Your queue number is: N" + Math.floor(Math.random() * 900 + 100) + ". Estimated wait time: 15-20 minutes. Please proceed to the nurse station and show this number. Is there anything else I can help you with?";
+        }
+    }
+    
+    // No to save
+    if (msg.includes('no') || msg.includes('not yet')) {
+        return "No problem! Feel free to ask me any other questions about your symptoms or concerns.";
+    }
+    
+    // Default responses
+    const defaultResponses = [
+        "I see. Can you tell me more about that?",
+        "Thank you for sharing. Are you experiencing any other symptoms?",
+        "I understand. How severe would you say this symptom is - mild, moderate, or severe?",
+        "That's helpful information. Have you experienced this before?",
+        "I appreciate you sharing that. Do you have any chronic medical conditions I should know about?"
+    ];
+    
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
 }
 
 async function loadUserProfile() {
