@@ -1,0 +1,32 @@
+/* Uzima Healthcare - Styles */
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.fade-in { 
+    animation: fadeIn 0.5s ease-out; 
+}
+
+details summary::-webkit-details-marker { 
+    display: none; 
+}
+
+details[open] summary { 
+    border-bottom: 2px solid #a855f7; 
+}
+
+.chat-message {
+    animation: fadeIn 0.3s ease-out;
+}
+.chat-messages-container {
+    height: 500px;
+    overflow-y: auto;
+}
